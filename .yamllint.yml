@@ -1,0 +1,16 @@
+---
+extends: default
+
+ignore:
+  - "**/2.reto-roto/**"
+  - "**/reto-roto/**"
+  - ".github/workflows/**"
+
+rules:
+  line-length: disable
+  document-start: disable
+  truthy: disable
+  comments: disable
+  comments-indentation: disable
+  empty-lines: disable
+  trailing-spaces: disable

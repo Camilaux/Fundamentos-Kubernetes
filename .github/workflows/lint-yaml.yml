@@ -1,0 +1,28 @@
+name: 🔍 Validar Sintaxis YAML
+
+on:
+  push:
+    branches: [main, master]
+  pull_request:
+    branches: [main, master]
+
+jobs:
+  lint-yaml:
+    name: Lint de archivos YAML
+    runs-on: ubuntu-latest
+    steps:
+      - name: 📥 Clonar repositorio
+        uses: actions/checkout@v4
+
+      - name: 🐍 Configurar Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.x'
+
+      - name: 📦 Instalar yamllint
+        run: pip install yamllint
+
+      - name: 🧪 Validar sintaxis YAML
+        run: |
+          echo "Validando archivos YAML (excluyendo carpetas reto-roto)..."
+          yamllint -c .yamllint.yml .

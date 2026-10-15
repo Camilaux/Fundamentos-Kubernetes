@@ -1,0 +1,5 @@
+blank_issues_enabled: false
+contact_links:
+  - name: 💬 Preguntas Generales y Comunidad
+    url: https://github.com/edwinbermudez91/Fundamentos-Kubernetes/discussions
+    about: ¿Quieres conversar con otros asistentes o compartir tu experiencia?
