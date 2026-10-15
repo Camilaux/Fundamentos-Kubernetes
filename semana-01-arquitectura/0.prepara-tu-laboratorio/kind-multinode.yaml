@@ -1,0 +1,10 @@
+# Clúster Multi-Nodo estándar de Kind (CNI por defecto: kindnet)
+# Workshop De Cero a Capitán en Kubernetes — Cloud Native Medellín
+kind: Cluster
+apiVersion: kind.x-k8s.io/v1alpha4
+nodes:
+  # El cerebro del clúster (Control Plane)
+  - role: control-plane
+  # Los servidores obreros (Workers) donde correrán tus aplicaciones
+  - role: worker
+  - role: worker

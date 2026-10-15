@@ -13,8 +13,8 @@ kind create cluster --name cnm-lab
 # 2. Ver cuántos clústeres de Kind tienes creados
 kind get clusters
 
-# 3.Crear un clúster personalizado usando un archivo YAML (¡Lo haremos abajo!)
-kind create cluster --name cnm-pro --config setup-local/kind-multinode.yaml
+# 3. Crear un clúster personalizado usando un archivo YAML (¡Lo haremos abajo!)
+kind create cluster --name cnm-pro --config semana-01-arquitectura/0.prepara-tu-laboratorio/kind-multinode.yaml
 
 # 4. Borrar un clúster cuando termines de practicar (libera tu RAM)
 kind delete cluster --name cnm-lab
@@ -24,32 +24,115 @@ kind delete cluster --name cnm-lab
 
 ## 🛠️ Personalizando tu Clúster de Kind con YAML
 
-Por defecto, Kind crea un solo servidor que hace de jefe (*Control Plane*) y obrero (*Worker*) al mismo tiempo. En la carpeta [`/setup-local`](./setup-local) tienes plantillas YAML para crear clústeres como en el mundo real:
+Por defecto, Kind crea un solo servidor que hace de jefe (*Control Plane*) y obrero (*Worker*) al mismo tiempo. En esta carpeta tienes plantillas YAML para crear clústeres como en el mundo real:
 
 <details>
-<summary><b>📄 1. Clúster Multi-Nodo (1 Cerebro + 2 Obreros) — <code>setup-local/kind-multinode.yaml</code></b></summary>
+<summary><b>📄 1. Clúster Multi-Nodo Estándar (1 Cerebro + 2 Obreros) — <code>kind-multinode.yaml</code></b></summary>
 <br>
 
-Ideal para ver cómo Kubernetes reparte tus Pods en distintos servidores:
+Ideal para ver cómo Kubernetes reparte tus Pods en distintos servidores usando el CNI estándar de Kind (`kindnet`). Funciona directamente de la caja sin pasos adicionales:
 
 ```yaml
 kind: Cluster
 apiVersion: kind.x-k8s.io/v1alpha4
 nodes:
-  # El cerebro del clúster
+  # El cerebro del clúster (Control Plane)
   - role: control-plane
   # Los servidores obreros donde correrán tus aplicaciones
   - role: worker
   - role: worker
 ```
+
 **Cómo crearlo:**
 ```bash
-kind create cluster --name cnm-multinodo --config setup-local/kind-multinode.yaml
+kind create cluster --name cnm-multinodo --config semana-01-arquitectura/0.prepara-tu-laboratorio/kind-multinode.yaml
 ```
+*En unos segundos todos tus nodos estarán automáticamente en estado `Ready`.*
 </details>
 
 <details>
-<summary><b>🌐 2. Clúster listo para Ingress (Puertos 80 y 443 abiertos) — <code>setup-local/kind-ingress.yaml</code></b></summary>
+<summary><b>🐝 2. Clúster Multi-Nodo con Cilium CNI (1 Cerebro + 2 Obreros) — <code>kind-cilium.yaml</code></b></summary>
+<br>
+
+**Cilium** es un plugin de red (CNI) de última generación impulsado por **eBPF** (tecnología que inyecta programas seguros directamente en el kernel de Linux sin tocar el código fuente). Proporciona conectividad de red de altísimo rendimiento, seguridad avanzada y observabilidad profunda para tus Pods.
+
+### Manifiesto de Kind (`kind-cilium.yaml`):
+
+```yaml
+kind: Cluster
+apiVersion: kind.x-k8s.io/v1alpha4
+
+# Deshabilitamos el CNI por defecto (kindnet) para que Cilium tome el control
+networking:
+  disableDefaultCNI: true
+  # Opcional: Reemplazo completo de kube-proxy mediante eBPF
+  # kubeProxyMode: "none"
+
+nodes:
+  # El cerebro del clúster (Control Plane)
+  - role: control-plane
+  # Servidores obreros donde correrán los Pods y el agente de Cilium
+  - role: worker
+  - role: worker
+```
+
+### Paso a paso para crearlo e instalar Cilium:
+
+#### 1. Crear el clúster con Kind:
+```bash
+kind create cluster --name cnm-cilium --config semana-01-arquitectura/0.prepara-tu-laboratorio/kind-cilium.yaml
+```
+
+> [!NOTE]
+> **¿Por qué los nodos arrancan en estado `NotReady`?**  
+> Al desactivar el CNI por defecto (`disableDefaultCNI: true`), los nodos no tienen un proveedor de red asignado aún. Es completamente normal que `kubectl get nodes` muestre `NotReady` hasta que Cilium quede instalado y asigne las redes a cada nodo.
+
+#### 2. Instalar el CLI de Cilium (o usar Helm):
+
+* **En macOS (Homebrew):**
+  ```bash
+  brew install cilium-cli
+  ```
+* **En Linux:**
+  ```bash
+  CILIUM_CLI_VERSION=$(curl -s https://raw.githubusercontent.com/cilium/cilium-cli/main/stable.txt)
+  CLI_ARCH=amd64
+  if [ "$(uname -m)" = "arm64" ]; then CLI_ARCH=arm64; fi
+  curl -L --fail --remote-name-all https://github.com/cilium/cilium-cli/releases/download/${CILIUM_CLI_VERSION}/cilium-linux-${CLI_ARCH}.tar.gz
+  sudo tar xzvfC cilium-linux-${CLI_ARCH}.tar.gz /usr/local/bin
+  rm cilium-linux-${CLI_ARCH}.tar.gz
+  ```
+* *(Alternativa con Helm si no usas cilium-cli):*
+  ```bash
+  helm repo add cilium https://helm.cilium.io/
+  helm repo update
+  helm install cilium cilium/cilium --namespace kube-system
+  ```
+
+#### 3. Desplegar Cilium en el clúster:
+```bash
+cilium install
+```
+
+#### 4. Validar que todo esté verde (`Ready`):
+```bash
+# Espera a que los pods de Cilium estén listos
+cilium status --wait
+
+# Revisa tus nodos: ¡ahora todos deben estar en Ready!
+kubectl get nodes
+```
+
+> [!TIP]
+> Puedes validar la conectividad interna completa entre Pods ejecutando:
+> ```bash
+> cilium connectivity test
+> ```
+
+</details>
+
+<details>
+<summary><b>🌐 3. Clúster listo para Ingress (Puertos 80 y 443 abiertos) — <code>kind-ingress.yaml</code></b></summary>
 <br>
 
 Ideal para la **Semana 3 (Redes)**. Conecta los puertos `80` y `443` de tu computador directamente con el clúster para abrir tus aplicaciones en el navegador sin usar `port-forward`:
@@ -76,7 +159,7 @@ nodes:
 ```
 **Cómo crearlo:**
 ```bash
-kind create cluster --name cnm-redes --config setup-local/kind-ingress.yaml
+kind create cluster --name cnm-redes --config semana-01-arquitectura/0.prepara-tu-laboratorio/kind-ingress.yaml
 ```
 </details>
 

@@ -72,7 +72,7 @@ No necesitas tarjeta de crédito ni cuentas en la nube; todo corre en tu computa
 3. **Cliente CLI:** [kubectl](https://kubernetes.io/es/docs/tasks/tools/) instalado.
 4. **Editor:** [VS Code](https://code.visualstudio.com/) con la extensión oficial de **YAML** y **Kubernetes**.
 
-👉 *¿Tienes problemas instalando alguno? Entra a [`/setup-local`](./setup-local) para ver guías paso a paso en Windows (WSL2), Mac y Linux.*
+👉 *¿Tienes problemas instalando alguno? Entra a [`0.prepara-tu-laboratorio`](./semana-01-arquitectura/0.prepara-tu-laboratorio) para ver guías paso a paso y plantillas de Kind.*
 </details>
 
 <details>
