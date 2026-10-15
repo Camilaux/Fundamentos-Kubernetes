@@ -106,10 +106,10 @@ A medida que envíes tus Pull Requests (PRs) resolviendo retos o mejorando apunt
 
 Hay muchas formas de sumar a la comunidad (¡no todo es código!):
 
-- 🐛 **Caza errores en los Retos Rotos:** Sube tu solución en `aportes-comunidad/soluciones-retos/tu-usuario/`.
+- 🐛 **Caza errores en los Retos Rotos:** Sube tu solución en [`aportes-comunidad/soluciones-retos/`](./aportes-comunidad/soluciones-retos).
 - 📝 **Mejora las explicaciones:** ¿Encontraste una analogía genial en clase? Agrégala al `README.md` de esa semana.
 - 🧰 **Alimenta los Cheatsheets:** Comparte tus alias, trucos o comandos favoritos en [`aportes-comunidad/cheatsheets/`](./aportes-comunidad/cheatsheets).
-- 🙋 **Toma un Issue:** Revisa la pestaña de [**Issues**](../../issues) con la etiqueta `good first issue`.
+- 🙋 **Toma un Issue:** Revisa la pestaña de [**Issues**](https://github.com/edwinbermudez91/Fundamentos-Kubernetes/issues) con la etiqueta `good first issue`.
 
 📖 **Lee aquí el paso a paso ilustrado: [`CONTRIBUTING.md`](./CONTRIBUTING.md)**
 
