@@ -1,0 +1,28 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: pod-con-health-checks
+  labels:
+    comunidad: cloud-native-medellin
+    semana: "1"
+    tipo: resiliencia
+spec:
+  containers:
+    - name: servidor-saludable
+      image: nginx:alpine
+      ports:
+        - containerPort: 80
+      # readinessProbe: Determina si el pod está listo para recibir tráfico de red
+      readinessProbe:
+        httpGet:
+          path: /
+          port: 80
+        initialDelaySeconds: 3
+        periodSeconds: 5
+      # livenessProbe: Determina si la aplicación sigue viva o si el contenedor debe ser reiniciado
+      livenessProbe:
+        httpGet:
+          path: /
+          port: 80
+        initialDelaySeconds: 5
+        periodSeconds: 10

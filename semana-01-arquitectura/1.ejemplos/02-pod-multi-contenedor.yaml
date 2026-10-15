@@ -1,0 +1,61 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: pod-dos-contenedores
+  labels:
+    comunidad: cloud-native-medellin
+    semana: "1"
+    patron: sidecar
+spec:
+  # Volumen temporal compartido entre los contenedores dentro del mismo Pod
+  volumes:
+    - name: contenido-compartido
+      emptyDir: {}
+
+  containers:
+    # Contenedor 1: Servidor web principal que sirve los archivos
+    - name: servidor-web
+      image: nginx:alpine
+      ports:
+        - containerPort: 80
+      volumeMounts:
+        - name: contenido-compartido
+          mountPath: /usr/share/nginx/html
+
+    # Contenedor 2: Sidecar que genera y actualiza periódicamente el contenido
+    - name: generador-contenido
+      image: busybox:1.36
+      command: ["/bin/sh", "-c"]
+      args:
+        - |
+          while true; do
+            cat <<EOF > /datos/index.html
+          <!DOCTYPE html>
+          <html>
+          <head>
+            <meta charset="utf-8">
+            <title>Pod Multi-contenedor</title>
+            <style>
+              body { font-family: sans-serif; background: #0f172a; color: #f8fafc; padding: 2rem; }
+              .card { background: #1e293b; border-radius: 8px; padding: 1.5rem; max-width: 600px; margin: auto; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.3); }
+              .badge { background: #38bdf8; color: #0f172a; padding: 4px 8px; border-radius: 4px; font-weight: bold; }
+              code { background: #0f172a; padding: 2px 6px; border-radius: 4px; color: #38bdf8; }
+            </style>
+          </head>
+          <body>
+            <div class="card">
+              <h1>🚀 Hola desde un Pod con 2 Contenedores</h1>
+              <p><span class="badge">Patrón Sidecar</span> Cloud Native Medellín</p>
+              <hr style="border-color: #334155; margin: 1rem 0;">
+              <p>🕒 <strong>Última actualización:</strong> $(date)</p>
+              <p>📦 <strong>Generado por:</strong> Contenedor <code>generador-contenido</code> (Busybox)</p>
+              <p>🌐 <strong>Servido por:</strong> Contenedor <code>servidor-web</code> (Nginx)</p>
+            </div>
+          </body>
+          </html>
+          EOF
+            sleep 5
+          done
+      volumeMounts:
+        - name: contenido-compartido
+          mountPath: /datos

@@ -1,0 +1,48 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: pod-recursos-y-variables
+  labels:
+    comunidad: cloud-native-medellin
+    semana: "1"
+    tipo: produccion-ready
+spec:
+  containers:
+    - name: app-demo
+      image: busybox:1.36
+      command: ["/bin/sh", "-c"]
+      args:
+        - |
+          echo "=== Contenedor con variables y límites configurados ==="
+          echo "Entorno: $ENTORNO_APP"
+          echo "Mensaje: $MENSAJE_BIENVENIDA"
+          echo "Nombre del Pod (Downward API): $MI_POD_NOMBRE"
+          echo "IP del Pod: $MI_POD_IP"
+          while true; do
+            echo "[$(date)] Pod '$MI_POD_NOMBRE' operando normalmente con memoria y CPU limitadas..."
+            sleep 15
+          done
+      env:
+        # Variables con valores literales directos
+        - name: ENTORNO_APP
+          value: "laboratorio-medellin"
+        - name: MENSAJE_BIENVENIDA
+          value: "Bienvenidos a Fundamentos de Kubernetes"
+        # Variables obtenidas dinámicamente de metadatos de Kubernetes (Downward API)
+        - name: MI_POD_NOMBRE
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.name
+        - name: MI_POD_IP
+          valueFrom:
+            fieldRef:
+              fieldPath: status.podIP
+      resources:
+        # Requests: recursos mínimos garantizados que el scheduler busca en el nodo
+        requests:
+          memory: "64Mi"
+          cpu: "50m"
+        # Limits: techo máximo de consumo (evita que un proceso sature el nodo)
+        limits:
+          memory: "128Mi"
+          cpu: "200m"

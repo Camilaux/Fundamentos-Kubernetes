@@ -40,10 +40,12 @@ kubectl get nodes
 ```
 
 ### Paso 2: Despliega tu primer Pod
-Mira el archivo [`ejemplos/01-mi-primer-pod.yaml`](./ejemplos/01-mi-primer-pod.yaml) y aplícalo en tu clúster:
+Explora la carpeta [`1.ejemplos`](./1.ejemplos) y aplica el primer Pod básico en tu clúster:
 ```bash
-kubectl apply -f semana-01-arquitectura/ejemplos/01-mi-primer-pod.yaml
+kubectl apply -f semana-01-arquitectura/1.ejemplos/01-mi-primer-pod.yaml
 ```
+*(También puedes probar un Pod multi-contenedor con dos contenedores usando `02-pod-multi-contenedor.yaml`)*
+
 
 Revisa que esté corriendo (`Running`):
 ```bash
