@@ -1,9 +1,14 @@
 ---
 extends: default
 
+# Excluir intencionalmente los retos rotos, ya que contienen errores a propósito
+# para que las personas y estudiantes del laboratorio los investiguen y corrijan.
 ignore:
-  - "**/2.reto-roto/**"
+  - "*reto-roto*"
+  - "*reto-roto*/**"
   - "**/reto-roto/**"
+  - "**/*reto-roto*/**"
+  - "**/2.reto-roto/**"
   - ".github/workflows/**"
 
 rules:
@@ -14,3 +19,4 @@ rules:
   comments-indentation: disable
   empty-lines: disable
   trailing-spaces: disable
+  new-line-at-end-of-file: disable
