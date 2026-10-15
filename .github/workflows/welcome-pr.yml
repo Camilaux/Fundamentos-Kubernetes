@@ -10,10 +10,10 @@ permissions:
 jobs:
   welcome:
     name: Saludar al contribuyente
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
       - name: Publicar comentario de bienvenida
-        uses: actions/github-script@v7
+        uses: actions/github-script@v9
         with:
           script: |
             const user = context.payload.pull_request.user.login;
