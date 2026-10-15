@@ -1,0 +1,19 @@
+# 🚨 RETO 3 (Nivel Medio): El Pod demasiado exigente 🚨
+# Síntoma: El Pod se crea, pero se queda en estado 'Pending' para siempre y nunca arranca.
+# Pista: El Scheduler está buscando un servidor libre pero ninguno cumple los requisitos.
+#        Ejecuta 'kubectl describe pod reto-03-exigente' y mira por qué el Scheduler lo rechazó.
+
+apiVersion: v1
+kind: Pod
+metadata:
+  name: reto-03-exigente
+  labels:
+    reto: "3"
+spec:
+  containers:
+    - name: app-glotona
+      image: nginx:alpine
+      resources:
+        requests:
+          memory: "500Gi"
+          cpu: "64"
