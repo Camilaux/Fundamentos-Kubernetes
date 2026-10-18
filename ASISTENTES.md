@@ -10,3 +10,4 @@
 | Nombre | Rol / Ocupación | GitHub / LinkedIn | Nivel | ¿Qué te motivó a entrar al workshop? |
 | :--- | :--- | :--- | :---: | :--- |
 | Edwin Bermúdez | Instructor / Senior DevOps & SRE | [@edwinbermudez91](https://github.com/edwinbermudez91) / https://www.linkedin.com/in/edwin-bermudez-cuervo | ⚓ Capitán k8s | Compartir conocimiento con la comunidad de Cloud Native Medellín. |
+| Gloria Gaviria | Estudiante / Desarrolladora Jr | [@glgaviria64](https://github.com/glgaviria64) / https://www.linkedin.com/in/glgaviria                         | 🛟 Grumetegit add ASISTENTES.md| Aprender de la comunidad de Cloud Native Medellín.                     |
