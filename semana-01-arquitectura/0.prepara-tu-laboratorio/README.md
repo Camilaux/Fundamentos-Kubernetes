@@ -1,3 +1,9 @@
+> [!TIP]
+> **¿No puedes instalar Docker o Kind en tu computador?**  
+> Si tu equipo tiene recursos limitados de RAM/CPU o restricciones en tu sistema operativo, puedes practicar de forma 100% gratuita y en el navegador con terminales interactivas en la nube:
+> * 🐳 **Laboratorios de Docker:** [KodeKloud Studio — Docker Labs](https://kodekloud.com/studio/labs/docker)
+> * ☸️ **Laboratorios de Kubernetes:** [KodeKloud Studio — Kubernetes Labs](https://kodekloud.com/studio/labs/kubernetes)
+
 ## 🐳 ¿Qué es Kind y por qué lo usamos en el Workshop?
 
 **Kind** significa **K**ubernetes **in** **D**ocker. 

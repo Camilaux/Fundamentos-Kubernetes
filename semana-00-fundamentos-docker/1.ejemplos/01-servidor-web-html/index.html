@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mi Primer Contenedor Docker — Cloud Native Medellín</title>
+  <style>
+    :root {
+      --bg: #0d1117;
+      --card-bg: #161b22;
+      --border: #30363d;
+      --text: #c9d1d9;
+      --heading: #58a6ff;
+      --accent: #00c7b7;
+      --code-bg: #21262d;
+    }
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      background-color: var(--bg);
+      color: var(--text);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      padding: 1.5rem;
+    }
+    .card {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      max-width: 600px;
+      width: 100%;
+      padding: 2.5rem;
+      box-shadow: 0 12px 28px rgba(0, 0, 0, 0.4);
+      text-align: center;
+    }
+    .badge {
+      display: inline-block;
+      background: rgba(0, 199, 183, 0.15);
+      color: var(--accent);
+      border: 1px solid var(--accent);
+      padding: 0.35rem 0.85rem;
+      border-radius: 9999px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      margin-bottom: 1.25rem;
+    }
+    h1 {
+      color: var(--heading);
+      font-size: 1.85rem;
+      margin-bottom: 0.75rem;
+    }
+    p {
+      line-height: 1.6;
+      margin-bottom: 1.5rem;
+    }
+    .steps {
+      text-align: left;
+      background: var(--code-bg);
+      border-radius: 8px;
+      padding: 1.25rem 1.5rem;
+      margin-bottom: 1.5rem;
+      font-size: 0.95rem;
+    }
+    .steps ol {
+      padding-left: 1.2rem;
+    }
+    .steps li {
+      margin-bottom: 0.5rem;
+    }
+    .footer {
+      font-size: 0.85rem;
+      color: #8b949e;
+      border-top: 1px solid var(--border);
+      padding-top: 1.25rem;
+    }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <span class="badge">🐳 Docker + ☸️ Kubernetes</span>
+    <h1>¡Hola desde tu Contenedor!</h1>
+    <p>
+      Si estás viendo esta página web servida por <strong>Nginx</strong>, significa que tu imagen de Docker fue empaquetada correctamente y está corriendo con éxito.
+    </p>
+
+    <div class="steps">
+      <strong>¿Qué acaba de ocurrir por debajo?</strong>
+      <ol>
+        <li>Docker leyó el <code>Dockerfile</code>.</li>
+        <li>Descargó la capa base oficial de <code>nginx:alpine</code>.</li>
+        <li>Copió este archivo <code>index.html</code> dentro de <code>/usr/share/nginx/html/</code>.</li>
+        <li>Expuso el puerto 80 y dejó el proceso escuchando en primer plano.</li>
+      </ol>
+    </div>
+
+    <div class="footer">
+      🏔️ Comunidad Cloud Native Medellín • De Cero a Capitán en Kubernetes ☕
+    </div>
+  </div>
+</body>
+</html>

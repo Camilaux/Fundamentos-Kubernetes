@@ -6,20 +6,22 @@
 
 ## 🧠 Resumen en 2 minutos (Sin enredos)
 
-Imagina que tienes una cafetería muy exitosa en Medellín:
-* **El Contenedor (Docker):** Es la cafetera expreso empacada y lista para funcionar.
-* **El Pod:** Es la **estación de café** donde conectas esa cafetera (le da electricidad, agua y un lugar físico). En Kubernetes nunca pones cafeteras sueltas en el piso; siempre van dentro de un **Pod**.
-* **El Worker Node (Nodo trabajador):** Es el local físico donde caben varias estaciones de café.
-* **El Control Plane (Cerebro):** Es el administrador del negocio que vigila que todas las estaciones estén funcionando.
+Imagina una red de carritos de tinto atendiendo en las estaciones del Metro de Medellín:
+* **El Contenedor (Docker):** Es la **greca encendida** preparando el tinto (el proceso de tu aplicación corriendo en primer plano).
+* **El Pod:** Es el **carrito de tintos**, donde va la greca montada junto con los vasitos desechables y el azúcar. En Kubernetes nunca pones grecas sueltas en el piso; siempre van agrupadas dentro de un **Pod** que les da red (IP) y almacenamiento compartido.
+* **El Worker Node (Nodo trabajador):** Es la **estación física** (ej. Estación San Antonio o Parque Berrío) que cuenta con espacio y electricidad para alojar varios carritos.
+* **El Control Plane (Cerebro):** Es la **administración central del Metro** que supervisa la operación completa, decide en qué estación poner cada carrito y envía reemplazos si alguno se daña.
+
+👉 *¿Quieres ver la analogía completa con hora pico, Deployments, Services y HPA? Lee: [**De un Tinto Colombiano a Kubernetes**](../recursos/de-un-tinto-a-kubernetes.md).*
 
 ```mermaid
 graph TD
     U["👨‍💻 Tú (kubectl)"] -->|"1. Quiero un Pod con Nginx"| API["🧠 Control Plane (API Server)"]
-    API -->|"2. Asigna un servidor libre"| N1["💪 Worker Node"]
+    API -->|"2. Asigna un servidor libre"| N1["💪 Worker Node (Estación San Antonio)"]
     subgraph N1 ["💪 Worker Node (Tu Computador)"]
-        K["👷 Kubelet (Capataz)"] -->|"3. Crea la cápsula"| P["📦 Pod (IP: 10.244.0.5)"]
-        subgraph P ["📦 Pod"]
-            C["🐳 Contenedor Nginx (Puerto 80)"]
+        K["👷 Kubelet (Capataz)"] -->|"3. Prepara el carrito"| P["🛒 Pod (IP: 10.244.0.5)"]
+        subgraph P ["🛒 Pod: Carrito de tintos"]
+            C["🔥 Contenedor Nginx: Greca activa (Puerto 80)"]
         end
     end
 ```
@@ -27,6 +29,10 @@ graph TD
 ---
 
 ## 🧪 Laboratorio en Vivo (Hands-on)
+
+> [!TIP]
+> **¿Prefieres practicar en el navegador sin levantar un clúster local?**  
+> Puedes realizar ejercicios interactivos guiados con terminal en la nube en [**KodeKloud Studio — Kubernetes Labs**](https://kodekloud.com/studio/labs/kubernetes).
 
 ### Paso 1: Crea tu clúster local
 Si usas **Kind**, abre tu terminal y ejecuta:
