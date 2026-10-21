@@ -15,7 +15,7 @@
 </p>
 
 [☕ Guía del Tinto](./recursos/de-un-tinto-a-kubernetes.md) •
-[🚀 Empezar Ahora](#-paso-0-prepara-tu-laboratorio) •
+[🚀 Empezar Ahora](#paso-0-prepara-tu-laboratorio) •
 [🗺️ Mapa de Ruta](#️-mapa-de-ruta) •
 [🏆 Rangos de Navegación](#-rangos-de-navegación-gamificación) •
 [🤝 Cómo Contribuir](#-cómo-contribuir-al-repositorio)
@@ -70,6 +70,8 @@ flowchart LR
 | **06** | [**Empaquetado con Helm y Proyecto Final**](./semana-06-proyecto-final) | Creación de Charts básicos y despliegue de una app completa de 3 capas. | 🔜 Próximamente |
 
 ---
+
+<a id="paso-0-prepara-tu-laboratorio"></a>
 
 ## 🛠️ Paso 0: Prepara tu Laboratorio
 
