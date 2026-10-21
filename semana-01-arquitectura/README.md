@@ -65,6 +65,17 @@ kubectl port-forward pod/hola-medellin 8080:80
 ```
 👉 Abre en tu navegador **[http://localhost:8080](http://localhost:8080)** y verás tu servidor respondiendo.
 
+### Paso 4: Visualiza tu clúster con la consola Open Source (Headlamp)
+Para gestionar y entender mucho más rápido todo lo que pasa en tu clúster (nodos, pods, namespaces y eventos en tiempo real) sin depender exclusivamente de comandos en la terminal, te recomendamos usar **[Headlamp](https://headlamp.dev/)**, una consola visual open source moderna respaldada por Kubernetes SIGs.
+
+Puedes utilizarla de tres formas según lo que prefieras:
+1. **Como aplicación nativa de escritorio** (Windows, macOS o Linux, conectada a tu `~/.kube/config`).
+2. **Dentro del clúster con Helm** (expuesta vía `NodePort` en `kube-system`).
+3. **Como contenedor de Docker local**.
+
+👉 **Sigue el tutorial paso a paso para instalarla en cualquiera de sus modalidades en:**  
+🔗 [**Guía de Instalación y Uso de Headlamp (`headlamp.md`)**](./headlamp.md)
+
 ---
 
 ## 💥 El Reto Roto de la Semana 1

@@ -173,10 +173,11 @@ kind create cluster --name cnm-redes --config semana-01-arquitectura/0.prepara-t
 
 ## 🧰 Kit de Supervivencia: Si tienes varios clústeres
 
-Cuando tienes el clúster del trabajo, el de pruebas y el del workshop al mismo tiempo, es muy fácil equivocarse y lanzar un comando donde no debes. Estas **4 herramientas gratuitas** te harán la vida mucho más fácil:
+Cuando tienes el clúster del trabajo, el de pruebas y el del workshop al mismo tiempo, es muy fácil equivocarse y lanzar un comando donde no debes. Estas **herramientas gratuitas** te harán la vida mucho más fácil:
 
 | Herramienta | ¿Para qué sirve en palabras sencillas? | Cómo se usa |
 | :--- | :--- | :--- |
+| **[Headlamp](https://headlamp.dev/)** | **La consola web visual.** Panel de control open source en el navegador para inspeccionar Pods, Nodos, logs y eventos sin memorizar comandos. | Despliégalo con Helm y accede en `http://localhost:8000` *(guía detallada abajo)*. |
 | **[kubectx](https://github.com/ahmetb/kubectx)** | **El control remoto de clústeres.** Te permite saltar de un clúster a otro en 1 segundo sin comandos largos. | `kubectx` *(lista tus clústeres)*<br>`kubectx kind-cnm-lab` *(cambia de clúster)*<br>`kubectx -` *(vuelve al clúster anterior)* |
 | **[kubens](https://github.com/ahmetb/kubectx)** | **El selector de carpetas (Namespaces).** Se instala junto con `kubectx` y te ahorra escribir `-n mi-namespace` en cada comando. | `kubens` *(lista los namespaces)*<br>`kubens kube-system` *(entra a ese namespace)* |
 | **[k9s](https://k9scli.io/)** | **El panel de control en tu terminal.** Es una interfaz visual interactiva dentro de la consola para ver logs, entrar a Pods y borrar recursos con atajos de teclado. | Solo escribe `k9s` en tu terminal y muévete con las flechas. |
@@ -185,3 +186,58 @@ Cuando tienes el clúster del trabajo, el de pruebas y el del workshop al mismo 
 > [!TIP]
 > **El truco de velocidad número 1:** Agrega un alias en tu terminal para no escribir `kubectl` completo mil veces.
 > Ejecuta `alias k=kubectl` y ahora podrás escribir simplemente `k get pods` o `k describe pod mi-pod`.
+
+---
+
+## 🖥️ Consola Visual Open Source: Headlamp
+
+Para gestionar tu clúster de forma gráfica e intuitiva y entender la relación entre nodos, pods y namespaces mucho más rápido, puedes usar **[Headlamp](https://headlamp.dev/)**, una consola web y de escritorio open source respaldada por Kubernetes SIGs.
+
+> 📖 **Guía completa y detallada:** Puedes consultar la guía completa con explicaciones paso a paso en [**`semana-01-arquitectura/headlamp.md`**](../headlamp.md).
+
+### 🚀 Despliegue en el Clúster con Helm (como NodePort)
+
+1. **Añadir repositorio de Helm:**
+   ```bash
+   helm repo add headlamp https://kubernetes-sigs.github.io/headlamp/
+   helm repo update
+   ```
+
+2. **Instalar Headlamp como NodePort en `kube-system`:**
+   ```bash
+   helm install headlamp headlamp/headlamp --namespace kube-system --set service.type=NodePort
+   ```
+
+3. **Crear el Secret para obtener el Token de Administrador:**
+   ```bash
+   kubectl apply -f - <<EOF
+   apiVersion: v1
+   kind: Secret
+   metadata:
+     name: headlamp-admin
+     namespace: kube-system
+     annotations:
+       kubernetes.io/service-account.name: headlamp
+   type: kubernetes.io/service-account-token
+   EOF
+   ```
+
+4. **Validar el puerto NodePort:**
+   ```bash
+   kubectl get svc -n kube-system | grep headlamp
+   ```
+
+5. **Obtener y decodificar el token de acceso:**
+   ```bash
+   kubectl get secret headlamp-admin -n kube-system -o jsonpath='{.data.token}' | base64 --decode
+   ```
+
+6. **Acceder a la consola:**
+   * Abre `http://localhost:<PUERTO_NODEPORT>` o utiliza el túnel directo universal:
+     ```bash
+     kubectl port-forward -n kube-system svc/headlamp 8000:80
+     ```
+   * Abre **[http://localhost:8000](http://localhost:8000)** y pega el token generado.
+
+### 💻 ¿Prefieres instalarlo como App de Escritorio?
+Headlamp también está disponible como aplicación nativa para **Windows**, **macOS** y **Linux** sin necesidad de instalar nada en el clúster. Conoce cómo instalarla en la [Documentación Oficial de Headlamp](https://headlamp.dev/docs/latest/installation/desktop/) o en nuestra [Guía de Headlamp](../headlamp.md).

@@ -85,6 +85,7 @@ No necesitas tarjeta de crédito ni cuentas en la nube; todo corre en tu computa
 2. **Clúster Local:** [Kind](https://kind.sigs.k8s.io/) (recomendado por ligero) o [Minikube](https://minikube.sigs.k8s.io/).
 3. **Cliente CLI:** [kubectl](https://kubernetes.io/es/docs/tasks/tools/) instalado.
 4. **Editor:** [VS Code](https://code.visualstudio.com/) con la extensión oficial de **YAML** y **Kubernetes**.
+5. **Gestor de Paquetes:** [Helm](https://helm.sh/) (para desplegar complementos y la consola visual [Headlamp](https://headlamp.dev/)).
 
 👉 *¿Tienes problemas instalando alguno? Entra a [`0.prepara-tu-laboratorio`](./semana-01-arquitectura/0.prepara-tu-laboratorio) para ver guías paso a paso y plantillas de Kind.*
 </details>
@@ -93,12 +94,13 @@ No necesitas tarjeta de crédito ni cuentas en la nube; todo corre en tu computa
 <summary><b>⚡ Prueba rápida: ¿Cómo sé si mi computador ya está listo?</b></summary>
 <br>
 
-Abre tu terminal y ejecuta estos 3 comandos. Si todos te responden una versión sin errores, ¡estás listo para despegar!
+Abre tu terminal y ejecuta estos comandos. Si te responden una versión sin errores, ¡estás listo para despegar!
 
 ```bash
 docker --version
 kind --version   # o minikube version
 kubectl version --client
+helm version
 ```
 </details>
 
