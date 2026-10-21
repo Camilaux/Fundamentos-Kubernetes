@@ -22,7 +22,7 @@ jobs:
             ¡Qué alegría tenerte aprendiendo en comunidad en este workshop de **De Cero a Capitán en Kubernetes**!
 
             📌 **Chequeo rápido de tu aporte:**
-            - [ ] **¿Te agregaste a [ASISTENTES.md](https://github.com/${context.repo.owner}/${context.repo.repo}/blob/main/ASISTENTES.md)?** ¡Oficialmente eres un **Grumete**! 🛟
+            - [ ] **¿Te agregaste a [ASISTENTES.md](https://github.com/${context.repo.owner}/${context.repo.repo}/blob/main/ASISTENTES.md)?** ¡Oficialmente eres un **Marinero** de la tripulación! ⛵
             - [ ] **¿Resolviste un Reto Roto?** Asegúrate de que tu YAML corregido esté dentro de \`aportes-comunidad/soluciones-retos/${user}/semana-XX/\` sin modificar los archivos originales de la semana.
             - [ ] **¿Agregaste un Cheatsheet o apunte?** Estará disponible para todos tus compañeros en \`aportes-comunidad/cheatsheets/\`.
 
