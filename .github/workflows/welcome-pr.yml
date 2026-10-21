@@ -25,6 +25,7 @@ jobs:
             - [ ] **¿Te agregaste a [ASISTENTES.md](https://github.com/${context.repo.owner}/${context.repo.repo}/blob/main/ASISTENTES.md)?** ¡Oficialmente eres un **Marinero** de la tripulación! ⛵
             - [ ] **¿Resolviste un Reto Roto?** Asegúrate de que tu YAML corregido esté dentro de \`aportes-comunidad/soluciones-retos/${user}/semana-XX/\` sin modificar los archivos originales de la semana.
             - [ ] **¿Agregaste un Cheatsheet o apunte?** Estará disponible para todos tus compañeros en \`aportes-comunidad/cheatsheets/\`.
+            - [ ] **¿Tu Fork está sincronizado?** El repositorio ha sido actualizado recientemente. Recuerda hacer clic en **"Sync fork"** en tu GitHub para no tener conflictos con la versión principal.
 
             Un facilitador o mentor de la comunidad revisará tu Pull Request en breve. ¡A romper cosas sin miedo y seguir aprendiendo! 🚀`;
 

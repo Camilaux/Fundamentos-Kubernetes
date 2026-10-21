@@ -31,6 +31,10 @@
 > ☕ **¿Quieres entender Kubernetes con una historia 100% colombiana?**  
 > Lee el guion oficial para estudiantes y speakers: [**De un Tinto Colombiano a Kubernetes (Contenedores, Pods y el Metro de Medellín)**](./recursos/de-un-tinto-a-kubernetes.md).
 
+> [!IMPORTANT]
+> 📢 **¿Hiciste Fork de este repositorio antes?**  
+> El repositorio ha sido actualizado recientemente con los nuevos contenidos de Docker y mejoras en las plantillas. **Por favor sincroniza tu copia** entrando a tu repositorio en GitHub y haciendo clic en el botón **"Sync fork" ➔ "Update branch"** (o en tu terminal con `git pull origin main`).
+
 ---
 
 ## 🗺️ Mapa de Ruta
