@@ -36,6 +36,14 @@ jobs:
               return;
             }
 
+            // Ignorar al instructor / mantenedor principal (siempre mantiene su rango fijo de Capitán)
+            const instructors = ['edwinbermudez91', context.repo.owner.toLowerCase()];
+            if (instructors.includes(user.toLowerCase())) {
+              console.log(`Ignorando instructor @${user}: mantiene su rango fijo de Capitán.`);
+              core.setOutput('has_updates', 'false');
+              return;
+            }
+
             // Consultar todos los PRs cerrados y fusionados de este usuario
             const pulls = await github.paginate(github.rest.pulls.list, {
               owner: context.repo.owner,
@@ -66,6 +74,10 @@ jobs:
             let updated = false;
 
             lines = lines.map(line => {
+              // Proteger siempre la fila del instructor para que no se modifique
+              if (instructors.some(inst => line.toLowerCase().includes(inst))) {
+                return line;
+              }
               if (
                 line.toLowerCase().includes('@' + user.toLowerCase()) ||
                 line.toLowerCase().includes('github.com/' + user.toLowerCase())
