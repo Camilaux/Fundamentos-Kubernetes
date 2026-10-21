@@ -21,4 +21,5 @@
      * ¿Cómo lo solucionaste?
 
 3. **Envía tu Pull Request:**
-   Sigue los pasos de [`CONTRIBUTING.md`](../../CONTRIBUTING.md). ¡Al aprobar tu PR subirás de rango a **Timonel** o **Capitán** en [`ASISTENTES.md`](../../ASISTENTES.md)!
+   Sigue los pasos de [`CONTRIBUTING.md`](../../CONTRIBUTING.md).
+   * 🤖 **¡Completamente automático!** Cuando un mentor apruebe y fusione tu PR, un bot de GitHub Actions actualizará automáticamente tu rango en [`ASISTENTES.md`](../../ASISTENTES.md) (de **⛵ Marinero** a **🧭 Timonel** o **⚓ Capitán K8s**) y te felicitará en el Pull Request.

@@ -55,6 +55,33 @@ alias kns='kubens'
 
 ---
 
+## 🐳 Atajos y Comandos de Docker (Fundamentos para K8s)
+
+```bash
+# Alias útiles para Docker
+alias d='docker'
+alias dps='docker ps'
+alias dpsa='docker ps -a'
+alias di='docker images'
+alias dl='docker logs -f'
+alias dexec='docker exec -it'
+alias dstop='docker stop'
+alias drm='docker rm'
+alias drmi='docker rmi'
+alias dprune='docker system prune -f'
+```
+
+| ¿Qué quiero hacer con Docker? | Comando |
+| :--- | :--- |
+| **Construir imagen desde Dockerfile actual** | `docker build -t mi-app:v1.0 .` |
+| **Correr contenedor mapeando puerto** | `docker run -d -p 8080:80 --name mi-app mi-app:v1.0` |
+| **Entrar a la terminal interactiva del contenedor** | `docker exec -it mi-app sh` |
+| **Ver logs en tiempo real** | `docker logs -f mi-app` |
+| **Inyectar imagen local a tu clúster de Kind** | `kind load docker-image mi-app:v1.0 --name cnm-lab` |
+| **Limpiar contenedores detenidos e imágenes huérfanas** | `docker system prune` |
+
+---
+
 ## 🐝 Kind & Cilium Tips
 
 ```bash
@@ -70,6 +97,15 @@ cilium status
 # Probar la conectividad completa entre Pods gestionados por Cilium
 cilium connectivity test
 ```
+
+---
+
+## 🌐 Entornos de Práctica Interactivos (Playgrounds en la Nube)
+
+¿Sin acceso a tu terminal o tu máquina no tiene Docker/Kind instalado? Practica con estos laboratorios interactivos gratuitos directamente en el navegador:
+
+* 🐳 **Laboratorios de Docker:** [KodeKloud Studio — Docker](https://kodekloud.com/studio/labs/docker)
+* ☸️ **Laboratorios de Kubernetes:** [KodeKloud Studio — Kubernetes](https://kodekloud.com/studio/labs/kubernetes)
 
 ---
 

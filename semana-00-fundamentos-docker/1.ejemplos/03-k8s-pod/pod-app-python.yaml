@@ -1,0 +1,23 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: api-python-desde-docker
+  labels:
+    app: api-python
+    origen: docker-local
+spec:
+  containers:
+    - name: api
+      image: mi-api-cnm:v1.0
+      # IMPORTANTÍSIMO cuando usas Kind con imágenes locales:
+      # IfNotPresent le indica a Kubernetes que use la imagen que cargaste con:
+      # 'kind load docker-image mi-api-cnm:v1.0 --name cnm-lab'
+      # Si pusieras 'Always', Kubernetes intentaría salir a Docker Hub y fallaría con ErrImagePull.
+      imagePullPolicy: IfNotPresent
+      ports:
+        - containerPort: 8080
+      env:
+        - name: MENSAJE
+          value: "¡Esta imagen nació en Docker y ahora la orquesta Kubernetes! ☸️"
+        - name: PORT
+          value: "8080"
