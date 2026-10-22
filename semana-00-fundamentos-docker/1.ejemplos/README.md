@@ -1,16 +1,15 @@
-# 📂 Ejemplos Prácticos de Docker a Kubernetes (Semana 0)
+# 📂 Ejemplos Prácticos de Docker (Semana 0)
 
-En esta carpeta encontrarás ejemplos directos para aprender a empaquetar tus aplicaciones con Docker y transferirlas hacia un clúster de Kubernetes en **Kind**.
+En esta carpeta encontrarás ejemplos directos para aprender a empaquetar tus aplicaciones con Docker aplicando las mejores prácticas de la industria.
 
 ---
 
 ## 📑 Índice de Ejemplos
 
-| Carpeta / Archivo | Tipo de Aplicación | Concepto Clave |
+| Carpeta | Tipo de Aplicación | Concepto Clave |
 | :--- | :--- | :--- |
-| [`01-servidor-web-html/`](./01-servidor-web-html) | Sitio Web Estático (Nginx) | `FROM`, `COPY`, `EXPOSE` y `CMD` básico con Nginx. |
+| [`01-servidor-web-html/`](./01-servidor-web-html) | Sitio Web Estático (Nginx) | `FROM`, `COPY`, `EXPOSE` y `CMD` básico con Nginx en primer plano. |
 | [`02-app-python-api/`](./02-app-python-api) | API REST en Python (Microservicio) | **Buenas prácticas:** Usuario no-root (`USER appuser`), `COPY --chown`, `WORKDIR`, `ENV`, `.dockerignore` y proceso PID 1. |
-| [`03-k8s-pod/pod-app-python.yaml`](./03-k8s-pod/pod-app-python.yaml) | Manifiesto Pod de Kubernetes | Despliegue de imagen local con `imagePullPolicy: IfNotPresent` y validación de seguridad con `securityContext.runAsNonRoot: true`. |
 
 ---
 
@@ -24,7 +23,7 @@ En esta carpeta encontrarás ejemplos directos para aprender a empaquetar tus ap
 
 ---
 
-## 🚀 Flujo Completo: De Docker a Kubernetes
+## 🚀 Flujo Práctico Paso a Paso con Docker
 
 ### 1. Construir la imagen de la API en Python
 Abre tu terminal en la raíz del repositorio y ejecuta:
@@ -40,8 +39,8 @@ docker images | grep mi-api-cnm
 
 ---
 
-### 2. Probar la imagen localmente con Docker
-Ejecuta el contenedor en segundo plano (`-d`) mapeando el puerto `8080`:
+### 2. Ejecutar el contenedor en segundo plano
+Corre el contenedor mapeando el puerto `8080`:
 
 ```bash
 docker run -d -p 8080:8080 --name test-api-local mi-api-cnm:v1.0
@@ -51,47 +50,44 @@ docker run -d -p 8080:8080 --name test-api-local mi-api-cnm:v1.0
 * **Prueba el endpoint en tu terminal:** `curl http://localhost:8080`
   * *Observa la respuesta:* Verás `"usuario_proceso": "appuser (UID: 10001)"` y `"es_root": false`. ¡El contenedor está protegido!
 * **Prueba el endpoint de salud:** `curl http://localhost:8080/health`
-* **Mira los logs que imprimió la app:** `docker logs -f test-api-local`
+* **Mira los logs en vivo:** `docker logs -f test-api-local`
 
-Una vez validado, detén y elimina el contenedor de prueba:
+---
+
+### 3. Probar sobrescritura de variables de entorno con `-e`
+Puedes cambiar el comportamiento de la aplicación en tiempo de ejecución sin reconstruir la imagen:
+
 ```bash
-docker stop test-api-local && docker rm test-api-local
+docker run -d -p 8081:8080 -e MENSAJE="¡Saludos desde el Poblado en Medellín! ☕" --name test-api-env mi-api-cnm:v1.0
+curl http://localhost:8081
 ```
 
 ---
 
-### 3. Cargar la imagen en tu clúster de Kind
-Como la imagen `mi-api-cnm:v1.0` solo existe en tu computador y no en Docker Hub, debemos inyectarla a los nodos de Kind:
+### 4. Entrar a inspeccionar el contenedor con `docker exec`
+Abre una terminal interactiva dentro del contenedor activo:
 
 ```bash
-kind load docker-image mi-api-cnm:v1.0 --name cnm-lab
+docker exec -it test-api-local sh
 ```
-*(Si tu clúster tiene otro nombre, cambia `--name <nombre-cluster>`)*.
+Dentro del contenedor prueba ejecutar:
+```sh
+whoami    # Responderá: appuser
+id        # UID 10001(appuser) GID 10001(appgroup)
+exit
+```
 
 ---
 
-### 4. Desplegar la imagen en Kubernetes con seguridad activa
-Aplica el manifiesto YAML que incluye `securityContext`:
+### 5. Detener y limpiar los contenedores de prueba
+Cuando termines de practicar:
 
 ```bash
-kubectl apply -f semana-00-fundamentos-docker/1.ejemplos/03-k8s-pod/pod-app-python.yaml
+docker rm -f test-api-local test-api-env
 ```
 
-Verifica el estado del Pod:
-```bash
-kubectl get pods
-```
+> [!TIP]
+> 👉 **¿Cuándo entra Kubernetes?**  
+> En la **Semana 1** aprenderás a instalar tu clúster local con Kind y a orquestar contenedores usando Pods, Services y Deployments.
 
-Deberás ver `api-python-desde-docker` en estado `Running`. Como la imagen fue construida con `USER appuser`, cumple exitosamente con la regla `runAsNonRoot: true` exigida por Kubernetes.
-
----
-
-### 5. Abrir túnel con `port-forward`
-Conéctate desde tu navegador abriendo un túnel directo al Pod:
-
-```bash
-kubectl port-forward pod/api-python-desde-docker 8080:8080
-```
-
-Visita **[http://localhost:8080](http://localhost:8080)** y verás que ahora el `hostname_o_pod` corresponde exactamente al nombre del Pod asignado por Kubernetes.
 

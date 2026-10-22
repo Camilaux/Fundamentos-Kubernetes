@@ -9,8 +9,8 @@
 | Reto | Tipo de Error / Tema | Nivel | Carpeta / Archivo |
 | :---: | :--- | :---: | :--- |
 | **01** | Proceso en segundo plano apaga el contenedor (PID 1) | 🟢 Principiante | [`01-dockerfile-roto/`](./01-dockerfile-roto) |
-| **02** | Pod en K8s busca imagen local en internet (`ImagePullBackOff`) | 🟡 Intermedio | [`02-pod-sin-cargar-a-kind/`](./02-pod-sin-cargar-a-kind) |
-| **03** | Contenedor vulnerable ejecutándose como `root` (Falla en K8s) | 🟡 Intermedio | [`03-contenedor-como-root/`](./03-contenedor-como-root) |
+| **02** | Contenedor crashea por falta de variable de entorno (`ENV`) | 🟢 Principiante | [`02-variable-entorno-faltante/`](./02-variable-entorno-faltante) |
+| **03** | Contenedor vulnerable ejecutándose como `root` (Seguridad) | 🟡 Intermedio | [`03-contenedor-como-root/`](./03-contenedor-como-root) |
 | **04** | Fuga de contraseñas y secretos por falta de `.dockerignore` | 🟢 Principiante | [`04-dockerignore-y-archivos-secretos/`](./04-dockerignore-y-archivos-secretos) |
 | **05** | Conexión rechazada por enlazar a `127.0.0.1` y puerto desalineado | 🟢 Principiante | [`05-puerto-y-host-desalineado/`](./05-puerto-y-host-desalineado) |
 
@@ -27,26 +27,24 @@
 
 ---
 
-## 🎯 Reto 2: El Pod que busca una imagen local fantasma
-* **Ubicación:** [`02-pod-sin-cargar-a-kind/pod-roto.yaml`](./02-pod-sin-cargar-a-kind/pod-roto.yaml)
-* **Nivel:** 🟡 Intermedio
-* **Síntoma:** Construiste la imagen `mi-api-cnm:v1.0` en tu máquina, pero al aplicar el Pod en Kubernetes, se queda trabado en `ImagePullBackOff` o `ErrImagePull`.
+## 🎯 Reto 2: El contenedor que crashea por falta de variable de entorno
+* **Ubicación:** [`02-variable-entorno-faltante/`](./02-variable-entorno-faltante)
+* **Nivel:** 🟢 Principiante
+* **Síntoma:** La aplicación requiere `APP_SECRET_TOKEN` para iniciar. Al hacer `docker run -d`, el contenedor termina de inmediato con `Exited (1)`.
 * **Herramientas de investigación:**
-  * `kubectl get pods`
-  * `kubectl describe pod reto-docker-k8s` (lee los `Events` al final).
-* **Misión:** 
-  1. Carga la imagen al clúster de Kind con el comando correcto.
-  2. Ajusta el parámetro `imagePullPolicy` en el manifiesto YAML para que use la copia local.
+  * `docker ps -a`
+  * `docker logs <contenedor>`
+* **Misión:** Definir un valor por defecto con `ENV` en el `Dockerfile` o pasar la variable en tiempo de ejecución con `docker run -e`.
 
 ---
 
 ## 🎯 Reto 3: El contenedor vulnerable que corre como root
 * **Ubicación:** [`03-contenedor-como-root/`](./03-contenedor-como-root)
 * **Nivel:** 🟡 Intermedio
-* **Síntoma:** `docker run --rm reto-root:v1.0 whoami` responde `root`. En Kubernetes, al aplicar un Pod con `securityContext.runAsNonRoot: true`, falla con `CreateContainerConfigError`.
+* **Síntoma:** Al auditar la imagen con `docker run --rm <imagen> whoami`, responde `root` (UID 0), violando las políticas de seguridad de la organización.
 * **Herramientas de investigación:**
-  * `docker run --rm <imagen> whoami` o `id`
-  * `kubectl describe pod reto-root-en-k8s`
+  * `docker run --rm <imagen> whoami` o `id -u`
+  * `docker inspect <contenedor> --format '{{.Config.User}}'`
 * **Misión:** Crear un usuario no privilegiado (`appuser`), asignar propiedad de archivos con `--chown` y definir `USER appuser` en el `Dockerfile`.
 
 ---

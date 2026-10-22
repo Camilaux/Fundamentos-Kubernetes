@@ -134,117 +134,115 @@ Docker es extraordinario para empaquetar y ejecutar un contenedor en **una sola 
 
 ---
 
-## ⚡ El Truco de Oro para el Workshop: Kind y las Imágenes Locales
-
-Cuando usas Kubernetes en la nube (EKS, GKE, AKS), normalmente debes:
-1. Construir la imagen con `docker build`.
-2. Subirla a un registro público o privado (`docker push`).
-3. Kubernetes la descarga desde internet (`imagePullPolicy: Always`).
-
-**¡Pero en nuestro laboratorio local no necesitas subir nada a internet!**  
-Si estás usando un clúster local de **Kind**, puedes inyectar directamente la imagen construida en tu Docker local al clúster con un solo comando:
-
-```bash
-# Inyectar tu imagen local a los nodos de Kind
-kind load docker-image mi-api-cnm:v1.0 --name cnm-lab
-```
-
-> [!IMPORTANT]
-> **El secreto del YAML en Kubernetes:**  
-> En el manifiesto del Pod, siempre debes especificar:
-> ```yaml
-> spec:
->   containers:
->     - name: mi-app
->       image: mi-api-cnm:v1.0
->       imagePullPolicy: IfNotPresent  # 👈 ¡Obligatorio! Evita que K8s intente buscarla en Docker Hub
-> ```
-
----
-
-## 🧪 Laboratorio Práctico (Paso a Paso)
+## 🧪 Laboratorio Práctico con Docker (Paso a Paso)
 
 > [!TIP]
-> **¿Prefieres practicar en el navegador sin instalar Docker?**  
+> **¿Prefieres practicar en el navegador sin instalar Docker localmente?**  
 > Puedes realizar ejercicios interactivos guiados con terminal lista en la nube en [**KodeKloud Studio — Docker Labs**](https://kodekloud.com/studio/labs/docker).
 
-Vamos a recorrer el ciclo de vida completo: desde el código fuente hasta la orquestación en Kubernetes.
+En esta práctica aprenderás a construir una imagen Docker production-ready, ejecutarla, pasarle variables de entorno e inspeccionar su seguridad.
 
 ### Paso 1: Explora el código de la API de ejemplo
-Entra a la carpeta [`1.ejemplos/02-app-python-api`](./1.ejemplos/02-app-python-api). Verás una API ligera en Python (`app.py`) y su `Dockerfile`.
+Entra a la carpeta [`1.ejemplos/02-app-python-api`](./1.ejemplos/02-app-python-api). Verás una API ligera en Python (`app.py`), su archivo `.dockerignore` y su `Dockerfile` configurado con usuario no-root (`appuser`).
 
 ### Paso 2: Construye la imagen con Docker
+Abre tu terminal en la raíz del repositorio y ejecuta:
 ```bash
 docker build -t mi-api-cnm:v1.0 semana-00-fundamentos-docker/1.ejemplos/02-app-python-api
 ```
 
-Verifica que aparezca en tu lista local:
+Verifica que tu imagen aparezca en tu lista local:
 ```bash
 docker images | grep mi-api-cnm
 ```
 
-### Paso 3: Pruébala primero con Docker
-Corre el contenedor en segundo plano:
+### Paso 3: Corre el contenedor en segundo plano
+Ejecuta el contenedor mapeando el puerto `8080` de tu máquina con el `8080` del contenedor:
 ```bash
 docker run -d -p 8080:8080 --name test-docker mi-api-cnm:v1.0
 ```
 
-Pruébalo en tu navegador abriendo **[http://localhost:8080](http://localhost:8080)** o con curl:
+Verifica que esté activo:
+```bash
+docker ps
+```
+
+### Paso 4: Prueba la API y valida las mejores prácticas de seguridad
+Prueba el endpoint principal en tu navegador en **[http://localhost:8080](http://localhost:8080)** o con curl:
 ```bash
 curl http://localhost:8080
 ```
-Verás una respuesta en JSON indicando el hostname del contenedor.
 
-Limpia el contenedor de prueba:
+Observa la respuesta JSON:
+```json
+{
+  "mensaje": "¡Hola desde mi contenedor en Cloud Native Medellín! 🏔️☕",
+  "puerto": 8080,
+  "usuario_proceso": "appuser (UID: 10001)",
+  "es_root": false,
+  "comunidad": "Cloud Native Medellín 🏔️☕"
+}
+```
+¡Comprueba que `"es_root": false`! El contenedor está corriendo con el usuario sin privilegios `appuser` (UID 10001).
+
+Prueba también el endpoint de salud y revisa los logs generados:
 ```bash
-docker stop test-docker && docker rm test-docker
+curl http://localhost:8080/health
+docker logs -f test-docker
 ```
 
-### Paso 4: Carga la imagen en tu clúster de Kind
-Si tu clúster de Kind se llama `cnm-lab` (creado en la Semana 1):
+### Paso 5: Entra a explorar el contenedor con `docker exec`
+Abre una terminal interactiva dentro del contenedor en ejecución:
 ```bash
-kind load docker-image mi-api-cnm:v1.0 --name cnm-lab
+docker exec -it test-docker sh
+```
+Prueba ejecutar comandos dentro:
+```sh
+whoami    # Responderá: appuser
+id        # UID 10001(appuser) GID 10001(appgroup)
+exit
 ```
 
-### Paso 5: Despliega la imagen en Kubernetes con un Pod
-Aplica el manifiesto que conecta Kubernetes con tu imagen:
+### Paso 6: Prueba sobreescribir variables en tiempo de ejecución con `-e`
+Docker te permite cambiar el comportamiento de la imagen sin tener que volver a compilarla:
 ```bash
-kubectl apply -f semana-00-fundamentos-docker/1.ejemplos/03-k8s-pod/pod-app-python.yaml
+docker run -d -p 8081:8080 -e MENSAJE="¡Saludos desde Medellín! ☕" --name test-docker-env mi-api-cnm:v1.0
+curl http://localhost:8081
 ```
 
-Revisa que esté corriendo:
+### Paso 7: Limpieza
+Detén y elimina los contenedores de prueba para liberar puertos y memoria:
 ```bash
-kubectl get pods
+docker rm -f test-docker test-docker-env
 ```
 
-### Paso 6: Conéctate con `port-forward`
-```bash
-kubectl port-forward pod/api-python-desde-docker 8080:8080
-```
-Abre **[http://localhost:8080](http://localhost:8080)**. ¡Felicidades! Acabas de empaquetar tu propia aplicación con Docker y orquestarla dentro de Kubernetes. 🎉
+> [!NOTE]
+> ☸️ **¿Cuándo veremos Kubernetes?**  
+> ¡En la **Semana 1**! Allí aprenderás a crear tu propio clúster local con **Kind**, entenderás el Control Plane y los Worker Nodes, y desplegarás tus primeros Pods en YAML.
 
 ---
 
-## 💥 Los Retos Rotos de la Semana 0
+## 💥 Los Retos Rotos de la Semana 0 (100% Docker)
 
 Entra a la carpeta [`2.reto-roto`](./2.reto-roto) y ponte a prueba depurando los fallos reales de la industria:
-1. **`01-dockerfile-roto`:** El contenedor se apaga inmediatamente tras iniciar porque el proceso principal se envía a segundo plano (PID 1).
-2. **`02-pod-sin-cargar-a-kind`:** Un Pod configurado para usar una imagen local se queda eternamente en `ImagePullBackOff`.
-3. **`03-contenedor-como-root`:** La imagen corre como `root` y Kubernetes la rechaza con `CreateContainerConfigError` al aplicar políticas de seguridad estrictas.
-4. **`04-dockerignore-y-archivos-secretos`:** Un `COPY . .` sin `.dockerignore` filtra credenciales y secretos (`.env`) dentro de la imagen pública.
-5. **`05-puerto-y-host-desalineado`:** El contenedor está `Up`, pero la app no responde porque escucha en `127.0.0.1` en vez de `0.0.0.0` y tiene los puertos desalineados.
+1. **[`01-dockerfile-roto`](./2.reto-roto/01-dockerfile-roto):** El contenedor se apaga inmediatamente tras iniciar porque el proceso principal se envía a segundo plano (PID 1).
+2. **[`02-variable-entorno-faltante`](./2.reto-roto/02-variable-entorno-faltante):** El contenedor termina de inmediato con `Exited (1)` porque falta una variable de entorno obligatoria (`ENV` vs `docker run -e`).
+3. **[`03-contenedor-como-root`](./2.reto-roto/03-contenedor-como-root):** La imagen corre como `root` (UID 0), violando las políticas de seguridad de la organización.
+4. **[`04-dockerignore-y-archivos-secretos`](./2.reto-roto/04-dockerignore-y-archivos-secretos):** Un `COPY . .` sin `.dockerignore` filtra credenciales y secretos (`.env`) dentro de la imagen pública.
+5. **[`05-puerto-y-host-desalineado`](./2.reto-roto/05-puerto-y-host-desalineado):** El contenedor está `Up`, pero la app no responde porque escucha en `127.0.0.1` en vez de `0.0.0.0` y tiene los puertos desalineados.
 
 ---
 
 ## 🕵️‍♂️ Diccionario Rápido: ¿Qué le duele a mi Contenedor Docker?
 
-| Síntoma en Docker / K8s | Causa más probable | Cómo solucionarlo |
+| Síntoma en Docker | Causa más probable | Cómo solucionarlo |
 | :--- | :--- | :--- |
 | **El contenedor se apaga solo al segundo de iniciarlo** | El proceso principal (PID 1) terminó o se envió a segundo plano (ej: `nginx` sin `daemon off;` o un script que no se queda escuchando). | Asegúrate de que el comando en `CMD` o `ENTRYPOINT` corra en primer plano (*foreground*). |
-| **`CreateContainerConfigError: container has runAsNonRoot and image will run as root`** | El Pod exige no correr como root, pero el `Dockerfile` no declaró la instrucción `USER`. | Crea un usuario y grupo no-root en el `Dockerfile` y define `USER <usuario>`. |
+| **El contenedor termina con `Exited (1)` de inmediato** | Falta una variable de entorno requerida o la app arrojó una excepción al iniciar. | Revisa con `docker logs <contenedor>` e inyecta la variable con `ENV` o `docker run -e`. |
+| **`docker run --rm <img:> whoami` responde `root`** | La imagen no declaró la directiva `USER`, por lo que corre con los máximos privilegios de superusuario. | Crea un usuario y grupo no-root en el `Dockerfile` y define `USER <usuario>`. |
 | **`curl: (52) Empty reply` o `Connection refused` (Contenedor activo)** | La app dentro del contenedor escucha en `127.0.0.1` (loopback interno) en lugar de `0.0.0.0`, o el puerto interno no coincide con el mapeo. | Enlaza el servidor a `0.0.0.0` y alinea el puerto del proceso con el puerto de la derecha en `-p <host>:<contenedor>`. |
 | **Secretos o claves privadas visibles al inspeccionar la imagen** | No existe un archivo `.dockerignore` y se copió toda la carpeta local con `COPY . .`. | Crea un `.dockerignore` excluyendo `.env`, `.git/`, logs y llaves, y copia solo archivos específicos. |
 | **`docker: Error response from daemon: Ports are not available`** | El puerto de tu máquina anfitrión ya está ocupado por otra app o por otro contenedor. | Cambia el puerto de la izquierda: `-p 8081:80` o detén el proceso que usa el puerto (`lsof -i :8080`). |
-| **`ImagePullBackOff` en Kubernetes con imagen local** | Olvidaste ejecutar `kind load docker-image` o dejaste `imagePullPolicy: Always`. | Carga la imagen al clúster y pon `imagePullPolicy: IfNotPresent`. |
 | **El archivo no existe dentro del contenedor** | Olvidaste la instrucción `COPY` en el `Dockerfile` o el archivo fue excluido por `.dockerignore`. | Revisa tu `Dockerfile` y valida que la ruta de origen y destino existan. |
+
 
