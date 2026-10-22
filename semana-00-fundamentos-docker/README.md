@@ -94,6 +94,21 @@ flowchart LR
 
 ---
 
+## 🛡️ Buenas Prácticas al Construir Imágenes (De Novato a Pro)
+
+Construir una imagen no es solo hacer que compile; en entornos de producción y Kubernetes la **seguridad**, el **tamaño** y el **rendimiento** son críticos:
+
+| Buena Práctica | ¿Por qué es obligatoria? | Ejemplo en el `Dockerfile` |
+| :--- | :--- | :--- |
+| **1. Nunca corras como `root`** | Por defecto los contenedores corren como superusuario (UID 0). Si tu app es vulnerada, el atacante puede escapar al host o nodo de K8s. | `RUN adduser -u 10001 -S appuser`<br>`USER appuser` |
+| **2. Usa siempre `.dockerignore`** | Evita que se filtren contraseñas (`.env`), llaves SSH o carpetas pesadas (`.git/`, `node_modules/`, cachés). | Crear archivo `.dockerignore` listando `.env`, `*.log`, `.git/`. |
+| **3. Fija versiones (Pinned Tags)** | Evita usar `:latest` porque puede cambiar en cualquier momento y romper tu despliegue sin previo aviso. | `FROM python:3.12-alpine` en lugar de `FROM python:latest`. |
+| **4. Asigna propiedad al copiar (`--chown`)** | Evita errores de permisos donde el usuario sin privilegios no puede leer o escribir sus propios archivos. | `COPY --chown=appuser:appgroup app.py .` |
+| **5. Escucha en `0.0.0.0`, no en `127.0.0.1`** | En Docker, `127.0.0.1` es el loopback interno y rechazará peticiones que vengan de fuera del contenedor. | `HTTPServer(("0.0.0.0", 8080), ...)` |
+| **6. Usa la forma `exec` en `CMD`** | Usar corchetes `["python", "app.py"]` permite que el proceso reciba señales del SO (`SIGTERM`) para apagarse limpiamente. | `CMD ["python", "app.py"]` en vez de `CMD python app.py`. |
+
+---
+
 ## 🌉 El Gran Puente: ¿Por qué Docker no basta y necesitamos Kubernetes?
 
 Docker es extraordinario para empaquetar y ejecutar un contenedor en **una sola máquina**. Pero en producción real surgen problemas que Docker solo no resuelve:
@@ -212,17 +227,24 @@ Abre **[http://localhost:8080](http://localhost:8080)**. ¡Felicidades! Acabas d
 
 ## 💥 Los Retos Rotos de la Semana 0
 
-Entra a la carpeta [`2.reto-roto`](./2.reto-roto):
-1. **`01-dockerfile-roto`:** Un compañero intentó empaquetar una aplicación web pero el contenedor se apaga inmediatamente tras iniciar (el dolor de cabeza más común de Docker).
-2. **`02-pod-sin-cargar-a-kind.yaml`:** Un Pod configurado para usar una imagen local se queda eternamente en `ImagePullBackOff`. ¿Por qué ocurre y cómo se soluciona?
+Entra a la carpeta [`2.reto-roto`](./2.reto-roto) y ponte a prueba depurando los fallos reales de la industria:
+1. **`01-dockerfile-roto`:** El contenedor se apaga inmediatamente tras iniciar porque el proceso principal se envía a segundo plano (PID 1).
+2. **`02-pod-sin-cargar-a-kind`:** Un Pod configurado para usar una imagen local se queda eternamente en `ImagePullBackOff`.
+3. **`03-contenedor-como-root`:** La imagen corre como `root` y Kubernetes la rechaza con `CreateContainerConfigError` al aplicar políticas de seguridad estrictas.
+4. **`04-dockerignore-y-archivos-secretos`:** Un `COPY . .` sin `.dockerignore` filtra credenciales y secretos (`.env`) dentro de la imagen pública.
+5. **`05-puerto-y-host-desalineado`:** El contenedor está `Up`, pero la app no responde porque escucha en `127.0.0.1` en vez de `0.0.0.0` y tiene los puertos desalineados.
 
 ---
 
 ## 🕵️‍♂️ Diccionario Rápido: ¿Qué le duele a mi Contenedor Docker?
 
-| Síntoma en Docker | Causa más probable | Cómo solucionarlo |
+| Síntoma en Docker / K8s | Causa más probable | Cómo solucionarlo |
 | :--- | :--- | :--- |
 | **El contenedor se apaga solo al segundo de iniciarlo** | El proceso principal (PID 1) terminó o se envió a segundo plano (ej: `nginx` sin `daemon off;` o un script que no se queda escuchando). | Asegúrate de que el comando en `CMD` o `ENTRYPOINT` corra en primer plano (*foreground*). |
+| **`CreateContainerConfigError: container has runAsNonRoot and image will run as root`** | El Pod exige no correr como root, pero el `Dockerfile` no declaró la instrucción `USER`. | Crea un usuario y grupo no-root en el `Dockerfile` y define `USER <usuario>`. |
+| **`curl: (52) Empty reply` o `Connection refused` (Contenedor activo)** | La app dentro del contenedor escucha en `127.0.0.1` (loopback interno) en lugar de `0.0.0.0`, o el puerto interno no coincide con el mapeo. | Enlaza el servidor a `0.0.0.0` y alinea el puerto del proceso con el puerto de la derecha en `-p <host>:<contenedor>`. |
+| **Secretos o claves privadas visibles al inspeccionar la imagen** | No existe un archivo `.dockerignore` y se copió toda la carpeta local con `COPY . .`. | Crea un `.dockerignore` excluyendo `.env`, `.git/`, logs y llaves, y copia solo archivos específicos. |
 | **`docker: Error response from daemon: Ports are not available`** | El puerto de tu máquina anfitrión ya está ocupado por otra app o por otro contenedor. | Cambia el puerto de la izquierda: `-p 8081:80` o detén el proceso que usa el puerto (`lsof -i :8080`). |
 | **`ImagePullBackOff` en Kubernetes con imagen local** | Olvidaste ejecutar `kind load docker-image` o dejaste `imagePullPolicy: Always`. | Carga la imagen al clúster y pon `imagePullPolicy: IfNotPresent`. |
 | **El archivo no existe dentro del contenedor** | Olvidaste la instrucción `COPY` en el `Dockerfile` o el archivo fue excluido por `.dockerignore`. | Revisa tu `Dockerfile` y valida que la ruta de origen y destino existan. |
+

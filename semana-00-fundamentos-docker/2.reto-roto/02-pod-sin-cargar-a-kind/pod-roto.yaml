@@ -1,6 +1,6 @@
 # 🚨 RETO 2 DOCKER-K8S (Nivel Medio): El Pod que busca una imagen fantasma 🚨
 # Síntoma: Al aplicar este Pod con:
-#          kubectl apply -f semana-00-fundamentos-docker/2.reto-roto/02-pod-sin-cargar-a-kind.yaml
+#          kubectl apply -f semana-00-fundamentos-docker/2.reto-roto/02-pod-sin-cargar-a-kind/pod-roto.yaml
 #          Al hacer 'kubectl get pods' se queda eternamente en 'ImagePullBackOff' o 'ErrImagePull'.
 #
 # Pista 1: Ejecuta 'kubectl describe pod reto-docker-k8s' y revisa los 'Events' al final.

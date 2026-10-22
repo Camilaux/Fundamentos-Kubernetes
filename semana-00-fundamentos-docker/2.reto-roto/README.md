@@ -1,6 +1,18 @@
 # 💥 Retos Rotos de la Semana 0: Docker y su Puente a Kubernetes
 
-¡Bienvenido al laboratorio de investigación de fallos! Aquí aprenderás a depurar los **dos errores más frustrantes** que todo principiante sufre al empezar con Docker y Kubernetes.
+¡Bienvenido al laboratorio de investigación de fallos! Aquí aprenderás a depurar los **5 errores y malas prácticas más comunes y frustrantes** que todo desarrollador enfrenta al trabajar con Docker y Kubernetes.
+
+---
+
+## 📑 Índice de Retos Rotos
+
+| Reto | Tipo de Error / Tema | Nivel | Carpeta / Archivo |
+| :---: | :--- | :---: | :--- |
+| **01** | Proceso en segundo plano apaga el contenedor (PID 1) | 🟢 Principiante | [`01-dockerfile-roto/`](./01-dockerfile-roto) |
+| **02** | Pod en K8s busca imagen local en internet (`ImagePullBackOff`) | 🟡 Intermedio | [`02-pod-sin-cargar-a-kind/`](./02-pod-sin-cargar-a-kind) |
+| **03** | Contenedor vulnerable ejecutándose como `root` (Falla en K8s) | 🟡 Intermedio | [`03-contenedor-como-root/`](./03-contenedor-como-root) |
+| **04** | Fuga de contraseñas y secretos por falta de `.dockerignore` | 🟢 Principiante | [`04-dockerignore-y-archivos-secretos/`](./04-dockerignore-y-archivos-secretos) |
+| **05** | Conexión rechazada por enlazar a `127.0.0.1` y puerto desalineado | 🟢 Principiante | [`05-puerto-y-host-desalineado/`](./05-puerto-y-host-desalineado) |
 
 ---
 
@@ -16,7 +28,7 @@
 ---
 
 ## 🎯 Reto 2: El Pod que busca una imagen local fantasma
-* **Ubicación:** [`02-pod-sin-cargar-a-kind.yaml`](./02-pod-sin-cargar-a-kind.yaml)
+* **Ubicación:** [`02-pod-sin-cargar-a-kind/pod-roto.yaml`](./02-pod-sin-cargar-a-kind/pod-roto.yaml)
 * **Nivel:** 🟡 Intermedio
 * **Síntoma:** Construiste la imagen `mi-api-cnm:v1.0` en tu máquina, pero al aplicar el Pod en Kubernetes, se queda trabado en `ImagePullBackOff` o `ErrImagePull`.
 * **Herramientas de investigación:**
@@ -28,7 +40,40 @@
 
 ---
 
+## 🎯 Reto 3: El contenedor vulnerable que corre como root
+* **Ubicación:** [`03-contenedor-como-root/`](./03-contenedor-como-root)
+* **Nivel:** 🟡 Intermedio
+* **Síntoma:** `docker run --rm reto-root:v1.0 whoami` responde `root`. En Kubernetes, al aplicar un Pod con `securityContext.runAsNonRoot: true`, falla con `CreateContainerConfigError`.
+* **Herramientas de investigación:**
+  * `docker run --rm <imagen> whoami` o `id`
+  * `kubectl describe pod reto-root-en-k8s`
+* **Misión:** Crear un usuario no privilegiado (`appuser`), asignar propiedad de archivos con `--chown` y definir `USER appuser` en el `Dockerfile`.
+
+---
+
+## 🎯 Reto 4: La fuga de secretos por falta de `.dockerignore`
+* **Ubicación:** [`04-dockerignore-y-archivos-secretos/`](./04-dockerignore-y-archivos-secretos)
+* **Nivel:** 🟢 Principiante
+* **Síntoma:** Un comando `COPY . .` sin `.dockerignore` empaquetó un archivo `.env` con credenciales dentro de las capas públicas de la imagen. Al hacer `docker run --rm <imagen> cat .env` se leen los secretos.
+* **Herramientas de investigación:**
+  * `docker run --rm <imagen> ls -la`
+* **Misión:** Crear el archivo `.dockerignore` correcto y refinar la instrucción `COPY` en el `Dockerfile`.
+
+---
+
+## 🎯 Reto 5: El puerto fantasma y la trampa del localhost (`127.0.0.1` vs `0.0.0.0`)
+* **Ubicación:** [`05-puerto-y-host-desalineado/`](./05-puerto-y-host-desalineado)
+* **Nivel:** 🟢 Principiante
+* **Síntoma:** `docker ps` muestra el contenedor en estado `Up`, pero al abrir `http://localhost:8080` o hacer `curl http://localhost:8080` el servidor responde `Connection refused` o `Empty reply from server`.
+* **Herramientas de investigación:**
+  * `docker logs <contenedor>`
+  * Revisar la IP de enlace en el código fuente (`127.0.0.1` rechaza conexiones de fuera del contenedor).
+* **Misión:** Corregir el código para escuchar en `0.0.0.0` y alinear los puertos entre la aplicación, el `Dockerfile` y el comando `docker run`.
+
+---
+
 ## 🏆 ¿Cómo enviar tu solución?
 1. Corrige los archivos en tu máquina.
 2. Cópialos a `aportes-comunidad/soluciones-retos/tu-usuario/semana-00/` con un comentario explicando qué causaba la falla.
 3. Envía tu **Pull Request** siguiendo la guía de [`CONTRIBUTING.md`](../../CONTRIBUTING.md) para subir de rango en [`ASISTENTES.md`](../../ASISTENTES.md).
+

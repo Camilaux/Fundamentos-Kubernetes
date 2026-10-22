@@ -16,8 +16,16 @@ spec:
       imagePullPolicy: IfNotPresent
       ports:
         - containerPort: 8080
+      # 🛡️ Buenas Prácticas de Seguridad en Kubernetes:
+      # Como en el Dockerfile creamos el usuario 'appuser' (UID 10001),
+      # exigimos a Kubernetes que valide que el contenedor NO corra como root:
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 10001
+        allowPrivilegeEscalation: false
       env:
         - name: MENSAJE
           value: "¡Esta imagen nació en Docker y ahora la orquesta Kubernetes! ☸️"
         - name: PORT
           value: "8080"
+

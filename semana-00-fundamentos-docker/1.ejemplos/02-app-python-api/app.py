@@ -28,10 +28,22 @@ class SimpleHandler(http.server.BaseHTTPRequestHandler):
         self.send_header("Content-Type", "application/json; charset=utf-8")
         self.end_headers()
 
+        # Inspección del usuario que ejecuta el proceso (Buenas prácticas de seguridad)
+        usuario = "desconocido"
+        uid = -1
+        try:
+            import pwd
+            uid = os.getuid()
+            usuario = pwd.getpwuid(uid).pw_name
+        except Exception:
+            usuario = os.environ.get("USER", "appuser")
+
         respuesta = {
             "mensaje": MENSAJE,
             "hostname_o_pod": socket.gethostname(),
             "puerto": PORT,
+            "usuario_proceso": f"{usuario} (UID: {uid})",
+            "es_root": (uid == 0),
             "orquestador": "Listo para correr en Kubernetes",
             "comunidad": "Cloud Native Medellín 🏔️☕"
         }
@@ -45,9 +57,16 @@ class SimpleHandler(http.server.BaseHTTPRequestHandler):
 
 if __name__ == "__main__":
     servidor = http.server.HTTPServer(("0.0.0.0", PORT), SimpleHandler)
-    print(f"🚀 Servidor escuchando en http://0.0.0.0:{PORT}...")
+    try:
+        import pwd
+        u_actual = pwd.getpwuid(os.getuid()).pw_name
+        uid_actual = os.getuid()
+    except Exception:
+        u_actual, uid_actual = "appuser", 10001
+    print(f"🚀 Servidor escuchando en http://0.0.0.0:{PORT} como '{u_actual}' (UID: {uid_actual})...")
     try:
         servidor.serve_forever()
     except KeyboardInterrupt:
         print("\n🛑 Servidor detenido limpiamente.")
         servidor.server_close()
+
