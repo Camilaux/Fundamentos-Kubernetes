@@ -222,9 +222,13 @@ Para gestionar tu clúster de forma gráfica e intuitiva y entender la relación
    EOF
    ```
 
-4. **Validar el puerto NodePort:**
+4. **Validar el puerto NodePort y la IP del nodo:**
    ```bash
+   # Ver el puerto asignado (ej. 80:31234/TCP)
    kubectl get svc -n kube-system | grep headlamp
+
+   # Si usas Kind, ver la IP interna del nodo (columna INTERNAL-IP, ej. 172.18.0.2)
+   kubectl get nodes -o wide
    ```
 
 5. **Obtener y decodificar el token de acceso:**
@@ -233,11 +237,12 @@ Para gestionar tu clúster de forma gráfica e intuitiva y entender la relación
    ```
 
 6. **Acceder a la consola:**
-   * Abre `http://localhost:<PUERTO_NODEPORT>` o utiliza el túnel directo universal:
+   * **Por NodePort con la IP del nodo (Linux):** Abre `http://<IP_DEL_NODO>:<PUERTO_NODEPORT>` (ej. `http://172.18.0.2:31234`).
+   * **Por Port-Forward (Universal en Windows/macOS/Linux):**
      ```bash
      kubectl port-forward -n kube-system svc/headlamp 8000:80
      ```
-   * Abre **[http://localhost:8000](http://localhost:8000)** y pega el token generado.
+     Abre **[http://localhost:8000](http://localhost:8000)** y pega el token generado.
 
 ### 💻 ¿Prefieres instalarlo como App de Escritorio?
 Headlamp también está disponible como aplicación nativa para **Windows**, **macOS** y **Linux** sin necesidad de instalar nada en el clúster. Conoce cómo instalarla en la [Documentación Oficial de Headlamp](https://headlamp.dev/docs/latest/installation/desktop/) o en nuestra [Guía de Headlamp](../headlamp.md).

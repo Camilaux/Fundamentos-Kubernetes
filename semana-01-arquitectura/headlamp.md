@@ -107,17 +107,27 @@ EOF
 > **¿Por qué creamos este Secret manualmente?**  
 > Desde Kubernetes 1.24+, los `ServiceAccounts` no generan tokens permanentes en un Secret estático de forma automática por seguridad. La anotación `kubernetes.io/service-account.name: headlamp` le ordena al Control Plane generar y almacenar un token JWT persistente vinculado al usuario de servicio de Headlamp.
 
-#### 4. Validar el puerto asignado al NodePort
-```bash
-# Validar el puerto para acceder NodePort
-kubectl get svc -n kube-system | grep headlamp
-```
+#### 4. Validar el puerto asignado al NodePort y la IP del Nodo
+Para conectarte a través de NodePort necesitas dos datos: el **puerto** y la **IP del nodo**.
 
-Verás una salida similar a:
-```text
-headlamp   NodePort   10.96.120.45   <none>   80:31234/TCP   1m
-```
-El número a la derecha de `80:` (en este ejemplo `31234`) es tu puerto `NodePort`.
+1. **Obtener el puerto NodePort:**
+   ```bash
+   kubectl get svc -n kube-system | grep headlamp
+   ```
+   Verás una salida similar a:
+   ```text
+   headlamp   NodePort   10.96.120.45   <none>   80:31234/TCP   1m
+   ```
+   El número a la derecha de `80:` (en este ejemplo `31234`) es tu puerto `NodePort`.
+
+2. **Obtener la IP del nodo (si usas Kind):**
+   Dado que Kind ejecuta cada nodo dentro de un contenedor de Docker, puedes averiguar la IP interna del nodo con:
+   ```bash
+   kubectl get nodes -o wide
+   ```
+   Mira la columna `INTERNAL-IP` (por ejemplo: `172.18.0.2`).
+   
+   *(También puedes consultarla directamente con Docker: `docker inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' cnm-lab-control-plane`)*
 
 #### 5. Obtener y decodificar el token de acceso
 Kubernetes guarda los secretos en Base64. Extráelo y decodifícalo en tu terminal:
@@ -129,16 +139,27 @@ kubectl get secret headlamp-admin -n kube-system -o jsonpath='{.data.token}' | b
 > Copia la cadena generada (es un token JWT largo). Lo usarás en la pantalla de bienvenida de Headlamp para iniciar sesión.
 
 #### 6. Conectarte a Headlamp
-* **Opción A (Acceso directo por NodePort):**  
-  Abre en tu navegador `http://localhost:<PUERTO_NODEPORT>` (ej. `http://localhost:31234`).
-* **Opción B (Acceso universal por túnel port-forward):**  
-  Si utilizas Kind y no mapeaste el puerto en tu archivo de configuración del clúster:
+
+* **Opción A (Acceso directo por NodePort con la IP del nodo):**  
+  Abre en tu navegador:
+  ```text
+  http://<IP_DEL_NODO>:<PUERTO_NODEPORT>
+  ```
+  *(Por ejemplo: `http://172.18.0.2:31234`)*
+  
+  > [!NOTE]
+  > **¿Estás en Linux o en macOS/Windows?**  
+  > * En **Linux**: La red de Docker es nativa y puedes acceder a `http://172.18.0.2:31234` directamente desde tu navegador.  
+  > * En **macOS / Windows**: Docker Desktop corre dentro de una máquina virtual ligera, por lo que la IP interna `172.18.x.x` no es accesible directamente desde el navegador de tu máquina anfitriona sin configuración de enrutamiento previa. En estos sistemas operativos, la **Opción B** es la solución directa y recomendada.
+
+* **Opción B (Acceso universal por túnel port-forward — recomendado):**  
+  Funciona idéntico en cualquier sistema operativo sin importar la configuración de red:
   ```bash
   kubectl port-forward -n kube-system svc/headlamp 8000:80
   ```
   Abre en tu navegador **[http://localhost:8000](http://localhost:8000)**.
 
-Pega el token generado y haz clic en **Sign In**.
+Pega el token generado en el paso 5 y haz clic en **Sign In**.
 
 ---
 
