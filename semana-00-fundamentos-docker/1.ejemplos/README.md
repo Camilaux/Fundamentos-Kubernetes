@@ -47,8 +47,9 @@ docker run -d -p 8080:8080 --name test-api-local mi-api-cnm:v1.0
 ```
 
 * **Verifica que esté vivo:** `docker ps`
+* **Prueba el endpoint en tu navegador:** Abre **[http://localhost:8080](http://localhost:8080)** para disfrutar la **interfaz web interactiva**: verás la taza de tinto paisa humeando con vapor animado, sonido de servicio con Web Audio API y simulador de variables de entorno en vivo.
 * **Prueba el endpoint en tu terminal:** `curl http://localhost:8080`
-  * *Observa la respuesta:* Verás `"usuario_proceso": "appuser (UID: 10001)"` y `"es_root": false`. ¡El contenedor está protegido!
+  * *Observa la respuesta JSON:* Verás `"usuario_proceso": "appuser (UID: 10001)"` y `"es_root": false`. ¡El contenedor está protegido!
 * **Prueba el endpoint de salud:** `curl http://localhost:8080/health`
 * **Mira los logs en vivo:** `docker logs -f test-api-local`
 

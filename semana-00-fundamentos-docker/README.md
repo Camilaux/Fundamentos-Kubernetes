@@ -169,6 +169,10 @@ docker ps
 
 ### Paso 4: Prueba la API y valida las mejores prácticas de seguridad
 Prueba el endpoint principal en tu navegador en **[http://localhost:8080](http://localhost:8080)** o con curl:
+
+* **En tu navegador:** Abre **[http://localhost:8080](http://localhost:8080)** para disfrutar la **interfaz web interactiva y animada**: verás la taza de tinto paisa humeando en tiempo real, podrás servir tintos con sonido y simular variables de entorno en vivo.
+* **En tu terminal:** Ejecuta `curl http://localhost:8080` para recibir la respuesta directa en JSON:
+
 ```bash
 curl http://localhost:8080
 ```
@@ -176,11 +180,15 @@ curl http://localhost:8080
 Observa la respuesta JSON:
 ```json
 {
-  "mensaje": "¡Hola desde mi contenedor en Cloud Native Medellín! 🏔️☕",
+  "mensaje": "¡Tinto recién colado! ☕",
+  "comunidad": "Cloud Native Medellín 🏔️☕",
+  "workshop": "De Cero a Capitán en Kubernetes",
+  "hostname_o_pod": "test-docker",
   "puerto": 8080,
   "usuario_proceso": "appuser (UID: 10001)",
   "es_root": false,
-  "comunidad": "Cloud Native Medellín 🏔️☕"
+  "tintos_servidos": 1,
+  "orquestador": "Listo para correr en Kubernetes"
 }
 ```
 ¡Comprueba que `"es_root": false`! El contenedor está corriendo con el usuario sin privilegios `appuser` (UID 10001).
