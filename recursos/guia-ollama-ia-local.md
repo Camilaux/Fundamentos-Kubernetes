@@ -125,10 +125,13 @@ Advierte antes de sugerir comandos destructivos como 'rm -rf' o 'kubectl delete'
 """
 ```
 
-### Cómo compilar el modelo personalizado:
+### Cómo compilar un modelo personalizado:
 ```bash
-docker exec -i ollama ollama create devops-mini -f /dev/stdin < Modelfile
+docker exec -i ollama ollama create <nombre-de-tu-modelo> -f /dev/stdin < Modelfile
 ```
+
+> 🧪 **¿Quieres probar un asistente en vivo?**  
+> En el [**Laboratorio 06: IA Local con Ollama**](../semana-00-fundamentos-docker/1.ejemplos/06-ia-local-ollama/README.md) crearás el asistente `devops-mini`, consultarás su API REST y monitorearás su consumo de RAM y CPU en Docker.
 
 ---
 

@@ -4,18 +4,9 @@ En este laboratorio aprenderás cómo almacenar, versionar, escanear y distribui
 
 Aprenderás el ciclo de vida completo de distribución en Docker: cómo autenticarte con `docker login`, cómo renombrar tus imágenes locales con `docker tag`, cómo publicarlas con `docker push`, cómo inspeccionar el escaneo de vulnerabilidades con **Trivy** en la web de Harbor y cómo descargarlas y ejecutarlas en otro entorno con `docker pull`.
 
----
-
-## ☕ La Analogía Paisa: La Bodega Central de Café de Exportación
-
-* En los laboratorios anteriores aprendiste a tostar el café (`Dockerfile`) y a empacarlo en bolsas selladas al vacío inmutables (`docker build`).
-* Pero si dejas tus bolsas únicamente en la cocina de tu casa (**tu máquina local**), nadie más en el mundo puede preparar café con tu receta.
-* Y si las dejas en una acera pública sin control (**Docker Hub público** sin autenticación), cualquiera puede ver tu código o puedes quedarte sin servicio por límites de descarga.
-* **Harbor es la Bodega Central Blindada de la Federación Cafetera:**
-  * **Portería con carnet (`docker login`):** Solo personas o sistemas autorizados pueden entrar a guardar o retirar bolsas.
-  * **Sección de lotes (`Proyectos` en Harbor):** Área exclusiva para tu equipo o empresa (ej: `cafeteria` o `cloud-native-medellin`).
-  * **Filtro de sanidad (Trivy Integrado):** Antes de acomodar una bolsa en la estantería, un escáner revisa que no tenga plagas ni químicos dañinos (CVEs). Si no pasa la prueba, la bodega prohíbe despacharla (**Vulnerability Prevention Policy**).
-  * **Pase de conductor para camiones de reparto (`Robot Accounts`):** Un permiso especial para que los servidores descarguen las bolsas sin entregarles la contraseña personal del administrador.
+> [!NOTE]
+> 📖 **Guía Teórica de Referencia:**  
+> Para comprender la arquitectura interna de Harbor (Core, Jobservice, Registry, PostgreSQL, Redis), el despliegue con Helm y la analogía de la *Bodega Central de Café*, consulta la [**Guía Empresarial de Harbor**](../../../recursos/guia-harbor-registry.md).
 
 ---
 

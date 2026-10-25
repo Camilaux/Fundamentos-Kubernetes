@@ -4,45 +4,9 @@ En este laboratorio vas a correr un **modelo de lenguaje (LLM) dentro de un cont
 
 Aquí juntas todo lo que viste en los ejemplos anteriores: imágenes oficiales, **volúmenes** (ejemplo 04), **puertos** (ejemplos 01 y 02), **límites de recursos** (`--memory`, `--cpus`), `docker exec` y **escaneo con Trivy**.
 
----
-
-## 🧠 ¿Qué es Ollama?
-
-[**Ollama**](https://ollama.com) es una herramienta de código abierto para **descargar, ejecutar y personalizar modelos de lenguaje en tu propia máquina**. Funciona de forma muy parecida a Docker:
-
-| En Docker | En Ollama | ¿Qué significa? |
-| :--- | :--- | :--- |
-| `docker pull nginx:alpine` | `ollama pull qwen2.5:0.5b` | Descarga un artefacto desde un registro público. |
-| `docker run` | `ollama run` | Arranca y usas el artefacto. |
-| `Dockerfile` | `Modelfile` | "Receta" para crear una versión personalizada a partir de una base (`FROM`). |
-| `docker build -t mi-app .` | `ollama create devops-mini -f Modelfile` | Construye tu artefacto derivado. |
-| Docker Hub | [ollama.com/library](https://ollama.com/library) | Catálogo de modelos disponibles. |
-| Docker Engine API | API REST en el puerto `11434` | Permite integrarlo con aplicaciones (Python, FastAPI, etc.). |
-
-En este laboratorio usamos **Qwen2.5 0.5B** (≈400 MB): un modelo pequeño que corre en CPU con poca RAM. Es ideal para aprender, aunque tiene límites claros (ver [Expectativas realistas](#-expectativas-realistas)).
-
-### 📚 Documentación oficial
-
-| Recurso | Enlace |
-| :--- | :--- |
-| Sitio oficial de Ollama | [ollama.com](https://ollama.com) |
-| Documentación general | [docs.ollama.com](https://docs.ollama.com) |
-| Ollama en Docker | [docs.ollama.com/docker](https://docs.ollama.com/docker) |
-| Referencia del `Modelfile` | [docs.ollama.com/modelfile](https://docs.ollama.com/modelfile) |
-| Referencia de la API REST | [docs.ollama.com/api](https://docs.ollama.com/api) |
-| Imagen oficial en Docker Hub | [hub.docker.com/r/ollama/ollama](https://hub.docker.com/r/ollama/ollama) |
-| Modelo Qwen2.5 | [ollama.com/library/qwen2.5](https://ollama.com/library/qwen2.5) |
-| Código fuente | [github.com/ollama/ollama](https://github.com/ollama/ollama) |
-
----
-
-## ☕ La Analogía Paisa: El Barista Aprendiz del Carrito
-
-* **La imagen `ollama/ollama`:** La greca profesional, lista para preparar cualquier receta.
-* **El modelo `qwen2.5:0.5b`:** Un barista aprendiz. Sabe lo básico, es rápido y cabe en un carrito pequeño (poca RAM).
-* **El `Modelfile`:** El uniforme y el manual de la casa. Le dice al aprendiz: *"Aquí solo se habla de DevOps, en español, con respuestas cortas y sin inventar"*.
-* **El volumen `ollama`:** La bodega donde se guarda lo que el barista aprendió. Si cambias el carrito (borras el contenedor), no tienes que volver a descargar el modelo.
-* **`127.0.0.1:11434`:** La ventanilla del carrito solo atiende a quien está dentro de la estación (tu máquina), no a cualquiera que pase por la calle (Internet).
+> [!NOTE]
+> 📖 **Guía Teórica de Referencia:**  
+> Para comprender la arquitectura de Ollama, comparativas frente a APIs de nube (OpenAI/Claude), aceleración por GPU y la analogía de la *Greca Inteligente*, consulta la [**Guía de IA Local con Ollama**](../../../recursos/guia-ollama-ia-local.md).
 
 ---
 
@@ -326,30 +290,9 @@ docker rmi ollama/ollama
 
 ---
 
-## 🔐 Recomendaciones de Seguridad
-
-| Recomendación | ¿Por qué? |
-| :--- | :--- |
-| **No expongas el puerto a la red** | Mantén `127.0.0.1:11434:11434`. La API de Ollama **no tiene autenticación por defecto**: si usas `-p 11434:11434`, cualquiera en tu red (o en Internet) podría usar tu modelo y tus recursos. |
-| **No montes el socket de Docker** | Nunca añadas `-v /var/run/docker.sock:/var/run/docker.sock` al contenedor de IA. Quien controla el socket controla el host. |
-| **No ejecutes comandos sugeridos automáticamente** | Usa el modelo para *proponer* comandos y revísalos antes de ejecutarlos, sobre todo `kubectl delete`, `rm -rf`, cambios de permisos y operaciones sobre producción. |
-| **Limita los recursos** | `--memory` y `--cpus` evitan que la inferencia deje sin recursos al resto del sistema. |
-| **Escanea la imagen** | Revisa con Trivy las vulnerabilidades de cualquier imagen de terceros antes de usarla. |
-
----
-
-## 🎯 Expectativas Realistas
-
-Este laboratorio te sirve para aprender **inferencia local, integración por API y automatización segura**.
-
-Para analizar manifiestos extensos, diagnosticar problemas complejos de Kubernetes o razonar sobre varios logs a la vez, **el modelo de 0.5B se quedará corto**. La mejora más importante es disponer de más RAM y pasar a un modelo más grande (por ejemplo `qwen2.5:1.5b`, `qwen2.5:3b` o `qwen2.5:7b`), cambiando solo la línea `FROM` del `Modelfile`.
-
-| Modelo | Tamaño aprox. | RAM recomendada |
-| :--- | :---: | :---: |
-| `qwen2.5:0.5b` | ~400 MB | 2 GB |
-| `qwen2.5:1.5b` | ~1 GB | 4 GB |
-| `qwen2.5:3b` | ~1.9 GB | 6 GB |
-| `qwen2.5:7b` | ~4.7 GB | 8–16 GB |
+> [!TIP]
+> 🛡️ **Seguridad y Modelos Mayores:**  
+> En este laboratorio fijamos `127.0.0.1:11434` y límites de memoria por seguridad. Para consultar la matriz de dimensionamiento de hardware (modelos de 1.5B, 3B y 7B) y las directivas de seguridad corporativa, revisa la [**Guía de IA Local con Ollama**](../../../recursos/guia-ollama-ia-local.md).
 
 ---
 

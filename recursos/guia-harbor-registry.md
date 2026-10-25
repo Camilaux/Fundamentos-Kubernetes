@@ -259,56 +259,31 @@ docker login harbor.cloudnative.local:8080 -u "robot$ci-tinto" -p "r.secret-toke
 
 ---
 
-### Paso 2: La Nomenclatura Obligatoria de Tags en Docker
+### Paso 2: La Nomenclatura Estándar OCI en Docker
 
-Para que Docker sepa a qué registro remoto debe enviar la imagen, la URL del registro y el proyecto deben estar prefijados en el tag:
+Para que el cliente Docker sepa a qué registro remoto debe enviar la imagen, la URL del servidor y el proyecto deben estar prefijados en el tag:
 
 $$\text{Nomenclatura:} \quad \mathbf{\langle servidor\text{-}harbor\rangle} / \mathbf{\langle nombre\text{-}proyecto\rangle} / \mathbf{\langle nombre\text{-}imagen\rangle} : \mathbf{\langle tag\rangle}$$
 
-Ejemplo tomando las imágenes que construimos en los laboratorios de la Semana 0:
-
 ```bash
-# 1. Imagen del Servidor Web (Ejemplo 01)
-docker tag mi-web-estatica:v1.0 harbor.local:8080/cafeteria/mi-web-estatica:v1.0
-
-# 2. Imagen de la API REST de Python (Ejemplo 02)
-docker tag mi-api-cnm:v1.0 harbor.local:8080/cafeteria/mi-api-cnm:v1.0
-
-# 3. Imagen del Backend de Microservicios (Ejemplo 03)
-docker tag greca-backend:v1.0 harbor.local:8080/cafeteria/greca-backend:v1.0
-
-# 4. Imagen de la App con Almacenamiento (Ejemplo 04)
-docker tag app-ventas:v1.0 harbor.local:8080/cafeteria/app-ventas:v1.0
+# Formato general de etiquetado:
+docker tag mi-aplicacion:v1.0 harbor.empresa.com/mi-proyecto/mi-aplicacion:v1.0
 ```
 
 ---
 
-### Paso 3: Subir la Imagen (`docker push`)
-
-Docker subirá las capas únicas a Harbor:
+### Paso 3: Subida y Descarga (`docker push` / `docker pull`)
 
 ```bash
-docker push harbor.local:8080/cafeteria/mi-api-cnm:v1.0
+# Subir la imagen al registro remoto:
+docker push harbor.empresa.com/mi-proyecto/mi-aplicacion:v1.0
+
+# Descargar la imagen en cualquier servidor autorizado:
+docker pull harbor.empresa.com/mi-proyecto/mi-aplicacion:v1.0
 ```
 
-Salida típica:
-```text
-The push refers to repository [harbor.local:8080/cafeteria/mi-api-cnm]
-7b9231f82e88: Pushed 
-c24239841f3e: Pushed 
-e19df2d63421: Pushed 
-v1.0: digest: sha256:4d87a412b1... size: 949
-```
-
----
-
-### Paso 4: Descargar la Imagen (`docker pull`)
-
-Cualquier nodo o máquina autorizada puede descargar la imagen:
-
-```bash
-docker pull harbor.local:8080/cafeteria/mi-api-cnm:v1.0
-```
+> 🧪 **¿Quieres practicar el flujo completo?**  
+> En el [**Laboratorio 05: Publicación con Harbor**](../semana-00-fundamentos-docker/1.ejemplos/05-registro-imagenes-harbor/README.md) etiquetarás y publicarás las imágenes de los laboratorios 01 a 04 en un registro local con interfaz web.
 
 ---
 
