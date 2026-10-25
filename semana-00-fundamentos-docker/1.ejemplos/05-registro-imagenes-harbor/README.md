@@ -300,4 +300,4 @@ docker compose -f semana-00-fundamentos-docker/1.ejemplos/05-registro-imagenes-h
 
 ---
 
-> 📖 **Guía Complementaria:** Si deseas aprender a instalar Harbor en Kubernetes con Helm o conocer a fondo su arquitectura interna, consulta la [**Guía Empresarial de Harbor**](../../../recursos/README.md).
+> 📖 **Guía Complementaria:** Si deseas aprender a instalar Harbor en Kubernetes con Helm o conocer a fondo su arquitectura interna, consulta la [**Guía Empresarial de Harbor**](../../../recursos/guia-harbor-registry.md).
