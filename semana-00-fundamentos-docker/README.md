@@ -146,6 +146,7 @@ Cada ejemplo cuenta con su propio código fuente ejecutable, su `Dockerfile` y s
 | **03** | **Redes y Comunicación entre Contenedores** | Redes bridge personalizadas (`docker network create`), resolución DNS automática por nombre y aislamiento de red. | 🔗 [Ver Guía del Ejemplo 03](./1.ejemplos/03-redes-comunicacion-contenedores/README.md) |
 | **04** | **Almacenamiento y Persistencia con Volúmenes** | Datos efímeros vs **Named Volumes** (`docker volume`) vs **Bind Mounts** (`-v`), evitando la pérdida de datos al recrear contenedores. | 🔗 [Ver Guía del Ejemplo 04](./1.ejemplos/04-almacenamiento-y-volumenes/README.md) |
 | **05** | **Registro de Imágenes con Harbor** | Autenticación, etiquetado (`tag`), publicación (`push`), escaneo de seguridad en registro y descarga (`pull`). | 🔗 [Ver Guía del Ejemplo 05](./1.ejemplos/05-registro-imagenes-harbor/README.md) |
+| **06** | **IA Local con Ollama** | Modelo de lenguaje en CPU dentro de Docker, límites de recursos, volumen para modelos, `Modelfile` y API REST segura en localhost. | 🔗 [Ver Guía del Ejemplo 06](./1.ejemplos/06-ia-local-ollama/README.md) |
 
 > [!TIP]
 > **¿Prefieres practicar en el navegador sin instalar Docker localmente?**  

@@ -13,6 +13,7 @@ En esta carpeta encontrarás los laboratorios prácticos organizados modularment
 | [`03-redes-comunicacion-contenedores/`](./03-redes-comunicacion-contenedores) | Microservicios en Red Bridge | Redes personalizadas (`docker network create`), DNS interno por nombre y aislamiento. | 🔗 [Ver Laboratorio 03](./03-redes-comunicacion-contenedores/README.md) |
 | [`04-almacenamiento-y-volumenes/`](./04-almacenamiento-y-volumenes) | API con Persistencia de Ventas | Datos efímeros vs **Named Volumes** (`docker volume`) vs **Bind Mounts** (`-v`). | 🔗 [Ver Laboratorio 04](./04-almacenamiento-y-volumenes/README.md) |
 | [`05-registro-imagenes-harbor/`](./05-registro-imagenes-harbor) | Registro de Imágenes (Harbor) | `docker login`, `docker tag`, `docker push`, `docker pull`, Cuentas Robot y escaneo con Trivy. | 🔗 [Ver Laboratorio 05](./05-registro-imagenes-harbor/README.md) |
+| [`06-ia-local-ollama/`](./06-ia-local-ollama) | IA Local con Ollama (Asistente DevOps) | LLM en CPU, límites `--memory`/`--cpus`, volumen para modelos, `Modelfile`, API REST en `127.0.0.1`. | 🔗 [Ver Laboratorio 06](./06-ia-local-ollama/README.md) |
 
 ---
 
