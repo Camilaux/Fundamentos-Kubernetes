@@ -134,119 +134,42 @@ Docker es extraordinario para empaquetar y ejecutar un contenedor en **una sola 
 
 ---
 
-## 🧪 Laboratorio Práctico con Docker (Paso a Paso)
+## 🧪 Laboratorios y Ejemplos Prácticos (`1.ejemplos/`)
+
+Cada ejemplo cuenta con su propio código fuente ejecutable, su `Dockerfile` y su guía detallada paso a paso:
+
+| # | Laboratorio | Conceptos Clave | Guía Paso a Paso |
+| :-: | :--- | :--- | :--- |
+| **01** | **Servidor Web Estático** | `FROM`, `COPY`, `EXPOSE` y `CMD` con Nginx sobre Alpine Linux (~25MB). | 🔗 [Ver Guía del Ejemplo 01](./1.ejemplos/01-servidor-web-html/README.md) |
+| **02** | **API REST con Buenas Prácticas** | Usuario no-root (`appuser`), variables de entorno (`ENV`), `.dockerignore`, proceso PID 1 e interfaz interactiva animada. | 🔗 [Ver Guía del Ejemplo 02](./1.ejemplos/02-app-python-api/README.md) |
+| **03** | **Redes y Comunicación entre Contenedores** | Redes bridge personalizadas (`docker network create`), resolución DNS automática por nombre y aislamiento de red. | 🔗 [Ver Guía del Ejemplo 03](./1.ejemplos/03-redes-comunicacion-contenedores/README.md) |
+| **04** | **Almacenamiento y Persistencia con Volúmenes** | Datos efímeros vs **Named Volumes** (`docker volume`) vs **Bind Mounts** (`-v`), evitando la pérdida de datos al recrear contenedores. | 🔗 [Ver Guía del Ejemplo 04](./1.ejemplos/04-almacenamiento-y-volumenes/README.md) |
 
 > [!TIP]
 > **¿Prefieres practicar en el navegador sin instalar Docker localmente?**  
 > Puedes realizar ejercicios interactivos guiados con terminal lista en la nube en [**KodeKloud Studio — Docker Labs**](https://kodekloud.com/studio/labs/docker).
 
-En esta práctica aprenderás a construir una imagen Docker production-ready, ejecutarla, pasarle variables de entorno e inspeccionar su seguridad.
-
-### Paso 1: Explora el código de la API de ejemplo
-Entra a la carpeta [`1.ejemplos/02-app-python-api`](./1.ejemplos/02-app-python-api). Verás una API ligera en Python (`app.py`), su archivo `.dockerignore` y su `Dockerfile` configurado con usuario no-root (`appuser`).
-
-### Paso 2: Construye la imagen con Docker
-Abre tu terminal en la raíz del repositorio y ejecuta:
-```bash
-docker build -t mi-api-cnm:v1.0 semana-00-fundamentos-docker/1.ejemplos/02-app-python-api
-```
-
-Verifica que tu imagen aparezca en tu lista local:
-```bash
-docker images | grep mi-api-cnm
-```
-
-### Paso 3: Corre el contenedor en segundo plano
-Ejecuta el contenedor mapeando el puerto `8080` de tu máquina con el `8080` del contenedor:
-```bash
-docker run -d -p 8080:8080 --name test-docker mi-api-cnm:v1.0
-```
-
-Verifica que esté activo:
-```bash
-docker ps
-```
-
-### Paso 4: Prueba la API y valida las mejores prácticas de seguridad
-Prueba el endpoint principal en tu navegador en **[http://localhost:8080](http://localhost:8080)** o con curl:
-
-* **En tu navegador:** Abre **[http://localhost:8080](http://localhost:8080)** para disfrutar la **interfaz web interactiva y animada**: verás la taza de tinto paisa humeando en tiempo real, podrás servir tintos con sonido y simular variables de entorno en vivo.
-* **En tu terminal:** Ejecuta `curl http://localhost:8080` para recibir la respuesta directa en JSON:
-
-```bash
-curl http://localhost:8080
-```
-
-Observa la respuesta JSON:
-```json
-{
-  "mensaje": "¡Tinto recién colado! ☕",
-  "comunidad": "Cloud Native Medellín 🏔️☕",
-  "workshop": "De Cero a Capitán en Kubernetes",
-  "hostname_o_pod": "test-docker",
-  "puerto": 8080,
-  "usuario_proceso": "appuser (UID: 10001)",
-  "es_root": false,
-  "tintos_servidos": 1,
-  "orquestador": "Listo para correr en Kubernetes"
-}
-```
-¡Comprueba que `"es_root": false`! El contenedor está corriendo con el usuario sin privilegios `appuser` (UID 10001).
-
-Prueba también el endpoint de salud y revisa los logs generados:
-```bash
-curl http://localhost:8080/health
-docker logs -f test-docker
-```
-
-### Paso 5: Entra a explorar el contenedor con `docker exec`
-Abre una terminal interactiva dentro del contenedor en ejecución:
-```bash
-docker exec -it test-docker sh
-```
-Prueba ejecutar comandos dentro:
-```sh
-whoami    # Responderá: appuser
-id        # UID 10001(appuser) GID 10001(appgroup)
-exit
-```
-
-### Paso 6: Prueba sobreescribir variables en tiempo de ejecución con `-e`
-Docker te permite cambiar el comportamiento de la imagen sin tener que volver a compilarla:
-```bash
-docker run -d -p 8081:8080 -e MENSAJE="¡Saludos desde Medellín! ☕" --name test-docker-env mi-api-cnm:v1.0
-curl http://localhost:8081
-```
-
-### Paso 7: Limpieza
-Detén y elimina los contenedores de prueba para liberar puertos y memoria:
-```bash
-docker rm -f test-docker test-docker-env
-```
-
----
-
-## 🚀 Siguientes Ejemplos Prácticos en `1.ejemplos/`
-
-Continúa tu aprendizaje práctico con los nuevos laboratorios completos listos para ejecutar:
-
-* **🌐 [Ejemplo 03: Redes en Docker y Comunicación entre Contenedores](./1.ejemplos/03-redes-comunicacion-contenedores):** Aprende a conectar dos microservicios (`greca-central` y `carrito-san-antonio`) mediante redes bridge personalizadas (`docker network create`), resolución DNS automática por nombre y por qué nunca debes usar `localhost` para conectar contenedores.
-* **💾 [Ejemplo 04: Almacenamiento y Persistencia con Volúmenes](./1.ejemplos/04-almacenamiento-y-volumenes):** Descubre qué le pasa a los datos cuando un contenedor se destruye y aprende a persistir información con **Named Volumes** (`docker volume`) y sincronizar carpetas en tiempo real con **Bind Mounts** (`-v`).
-
-> [!NOTE]
-> ☸️ **¿Cuándo veremos Kubernetes?**  
-> ¡En la **Semana 1**! Allí aprenderás a crear tu propio clúster local con **Kind**, entenderás el Control Plane y los Worker Nodes, y desplegarás tus primeros Pods en YAML.
-
 ---
 
 ## 💥 Los Retos Rotos de la Semana 0 (100% Docker)
 
-Entra a la carpeta [`2.reto-roto`](./2.reto-roto) y ponte a prueba depurando los fallos reales de la industria:
-1. **[`01-dockerfile-roto`](./2.reto-roto/01-dockerfile-roto):** El contenedor se apaga inmediatamente tras iniciar porque el proceso principal se envía a segundo plano (PID 1).
-2. **[`02-variable-entorno-faltante`](./2.reto-roto/02-variable-entorno-faltante):** El contenedor termina de inmediato con `Exited (1)` porque falta una variable de entorno obligatoria (`ENV` vs `docker run -e`).
-3. **[`03-contenedor-como-root`](./2.reto-roto/03-contenedor-como-root):** La imagen corre como `root` (UID 0), violando las políticas de seguridad de la organización.
-4. **[`04-dockerignore-y-archivos-secretos`](./2.reto-roto/04-dockerignore-y-archivos-secretos):** Un `COPY . .` sin `.dockerignore` filtra credenciales y secretos (`.env`) dentro de la imagen pública.
-5. **[`05-puerto-y-host-desalineado`](./2.reto-roto/05-puerto-y-host-desalineado):** El contenedor está `Up`, pero la app no responde porque escucha en `127.0.0.1` en vez de `0.0.0.0` y tiene los puertos desalineados.
+En la carpeta [`2.reto-roto/`](./2.reto-roto/README.md) encontrarás 5 desafíos reales con errores comunes de la industria que debes investigar, depurar y corregir:
+
+| Reto | Tipo de Error / Tema | Nivel | Enlace al Reto |
+| :---: | :--- | :---: | :--- |
+| **01** | Proceso en segundo plano apaga el contenedor (PID 1) | 🟢 Principiante | 🔗 [Reto 01: Dockerfile Roto](./2.reto-roto/01-dockerfile-roto/README.md) |
+| **02** | Contenedor crashea por falta de variable de entorno (`ENV`) | 🟢 Principiante | 🔗 [Reto 02: Variable Faltante](./2.reto-roto/02-variable-entorno-faltante/README.md) |
+| **03** | Contenedor vulnerable ejecutándose como `root` (Seguridad) | 🟡 Intermedio | 🔗 [Reto 03: Contenedor Root](./2.reto-roto/03-contenedor-como-root/README.md) |
+| **04** | Fuga de contraseñas y secretos por falta de `.dockerignore` | 🟢 Principiante | 🔗 [Reto 04: Archivos Secretos](./2.reto-roto/04-dockerignore-y-archivos-secretos/README.md) |
+| **05** | Conexión rechazada por enlazar a `127.0.0.1` y puerto desalineado | 🟢 Principiante | 🔗 [Reto 05: Host Desalineado](./2.reto-roto/05-puerto-y-host-desalineado/README.md) |
+
+> 🚀 **¿Resolviste los retos?** Sube tu solución en `aportes-comunidad/soluciones-retos/<tu-usuario>/semana-00/` y abre tu Pull Request para avanzar en tu rango de tripulación.
+
+---
+
+> [!NOTE]
+> ☸️ **¿Cuándo entra Kubernetes?**  
+> ¡En la **Semana 1**! Allí aprenderás a crear tu propio clúster local con **Kind**, entenderás el Control Plane y los Worker Nodes, y desplegarás tus primeros Pods en YAML.
 
 ---
 
