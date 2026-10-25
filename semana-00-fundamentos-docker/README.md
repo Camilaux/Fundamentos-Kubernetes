@@ -224,6 +224,15 @@ Detén y elimina los contenedores de prueba para liberar puertos y memoria:
 docker rm -f test-docker test-docker-env
 ```
 
+---
+
+## 🚀 Siguientes Ejemplos Prácticos en `1.ejemplos/`
+
+Continúa tu aprendizaje práctico con los nuevos laboratorios completos listos para ejecutar:
+
+* **🌐 [Ejemplo 03: Redes en Docker y Comunicación entre Contenedores](./1.ejemplos/03-redes-comunicacion-contenedores):** Aprende a conectar dos microservicios (`greca-central` y `carrito-san-antonio`) mediante redes bridge personalizadas (`docker network create`), resolución DNS automática por nombre y por qué nunca debes usar `localhost` para conectar contenedores.
+* **💾 [Ejemplo 04: Almacenamiento y Persistencia con Volúmenes](./1.ejemplos/04-almacenamiento-y-volumenes):** Descubre qué le pasa a los datos cuando un contenedor se destruye y aprende a persistir información con **Named Volumes** (`docker volume`) y sincronizar carpetas en tiempo real con **Bind Mounts** (`-v`).
+
 > [!NOTE]
 > ☸️ **¿Cuándo veremos Kubernetes?**  
 > ¡En la **Semana 1**! Allí aprenderás a crear tu propio clúster local con **Kind**, entenderás el Control Plane y los Worker Nodes, y desplegarás tus primeros Pods en YAML.

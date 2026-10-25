@@ -10,6 +10,8 @@ En esta carpeta encontrarás ejemplos directos para aprender a empaquetar tus ap
 | :--- | :--- | :--- |
 | [`01-servidor-web-html/`](./01-servidor-web-html) | Sitio Web Estático (Nginx) | `FROM`, `COPY`, `EXPOSE` y `CMD` básico con Nginx en primer plano. |
 | [`02-app-python-api/`](./02-app-python-api) | API REST en Python (Microservicio) | **Buenas prácticas:** Usuario no-root (`USER appuser`), `COPY --chown`, `WORKDIR`, `ENV`, `.dockerignore` y proceso PID 1. |
+| [`03-redes-comunicacion-contenedores/`](./03-redes-comunicacion-contenedores) | Microservicios en Red Bridge | **Redes y DNS:** Redes personalizadas (`docker network create`), resolución DNS automática por nombre de contenedor, y aislamiento. |
+| [`04-almacenamiento-y-volumenes/`](./04-almacenamiento-y-volumenes) | API con Persistencia de Ventas | **Almacenamiento:** Datos efímeros vs **Named Volumes** (`docker volume`) vs **Bind Mounts** (`-v`), evitando pérdida de datos al recrear contenedores. |
 
 ---
 
