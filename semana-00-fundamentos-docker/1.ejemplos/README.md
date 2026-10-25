@@ -12,6 +12,7 @@ En esta carpeta encontrarás los laboratorios prácticos organizados modularment
 | [`02-app-python-api/`](./02-app-python-api) | API REST en Python (Microservicio) | Usuario no-root (`appuser`), `COPY --chown`, `ENV`, `.dockerignore`, PID 1 y UI interactiva. | 🔗 [Ver Laboratorio 02](./02-app-python-api/README.md) |
 | [`03-redes-comunicacion-contenedores/`](./03-redes-comunicacion-contenedores) | Microservicios en Red Bridge | Redes personalizadas (`docker network create`), DNS interno por nombre y aislamiento. | 🔗 [Ver Laboratorio 03](./03-redes-comunicacion-contenedores/README.md) |
 | [`04-almacenamiento-y-volumenes/`](./04-almacenamiento-y-volumenes) | API con Persistencia de Ventas | Datos efímeros vs **Named Volumes** (`docker volume`) vs **Bind Mounts** (`-v`). | 🔗 [Ver Laboratorio 04](./04-almacenamiento-y-volumenes/README.md) |
+| [`05-registro-imagenes-harbor/`](./05-registro-imagenes-harbor) | Registro de Imágenes (Harbor) | `docker login`, `docker tag`, `docker push`, Robot Accounts y `imagePullSecrets` para Kubernetes. | 🔗 [Ver Laboratorio 05](./05-registro-imagenes-harbor/README.md) |
 
 ---
 

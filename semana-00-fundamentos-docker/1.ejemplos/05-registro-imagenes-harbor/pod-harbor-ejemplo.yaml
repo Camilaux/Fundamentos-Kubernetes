@@ -1,0 +1,33 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: api-tinto-desde-harbor
+  labels:
+    app: api-tinto
+    workshop: de-cero-a-capitan
+spec:
+  # 🔑 Vinculación con el Secret tipo docker-registry creado previamente:
+  # kubectl create secret docker-registry harbor-credenciales ...
+  imagePullSecrets:
+    - name: harbor-credenciales
+
+  containers:
+    - name: api-cafe
+      # 📦 Imagen alojada en el registro privado de Harbor:
+      image: harbor.cloudnative.local:8080/cafeteria/mi-api-cnm:v1.0
+      imagePullPolicy: IfNotPresent
+      ports:
+        - containerPort: 8080
+          name: http
+      env:
+        - name: MENSAJE
+          value: "¡Tinto despachado desde un Pod con imagen de Harbor! ☕⚓"
+        - name: COMUNIDAD
+          value: "Cloud Native Medellín 🏔️☕"
+      resources:
+        limits:
+          memory: "128Mi"
+          cpu: "200m"
+        requests:
+          memory: "64Mi"
+          cpu: "50m"

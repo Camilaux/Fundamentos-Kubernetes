@@ -145,6 +145,7 @@ Cada ejemplo cuenta con su propio código fuente ejecutable, su `Dockerfile` y s
 | **02** | **API REST con Buenas Prácticas** | Usuario no-root (`appuser`), variables de entorno (`ENV`), `.dockerignore`, proceso PID 1 e interfaz interactiva animada. | 🔗 [Ver Guía del Ejemplo 02](./1.ejemplos/02-app-python-api/README.md) |
 | **03** | **Redes y Comunicación entre Contenedores** | Redes bridge personalizadas (`docker network create`), resolución DNS automática por nombre y aislamiento de red. | 🔗 [Ver Guía del Ejemplo 03](./1.ejemplos/03-redes-comunicacion-contenedores/README.md) |
 | **04** | **Almacenamiento y Persistencia con Volúmenes** | Datos efímeros vs **Named Volumes** (`docker volume`) vs **Bind Mounts** (`-v`), evitando la pérdida de datos al recrear contenedores. | 🔗 [Ver Guía del Ejemplo 04](./1.ejemplos/04-almacenamiento-y-volumenes/README.md) |
+| **05** | **Registro de Imágenes con Harbor** | Autenticación, etiquetado (`tag`), publicación (`push`), escaneo en registro y `imagePullSecrets` en Kubernetes. | 🔗 [Ver Guía del Ejemplo 05](./1.ejemplos/05-registro-imagenes-harbor/README.md) |
 
 > [!TIP]
 > **¿Prefieres practicar en el navegador sin instalar Docker localmente?**  
