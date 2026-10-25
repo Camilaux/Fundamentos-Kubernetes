@@ -106,6 +106,7 @@ Construir una imagen no es solo hacer que compile; en entornos de producción y 
 | **4. Asigna propiedad al copiar (`--chown`)** | Evita errores de permisos donde el usuario sin privilegios no puede leer o escribir sus propios archivos. | `COPY --chown=appuser:appgroup app.py .` |
 | **5. Escucha en `0.0.0.0`, no en `127.0.0.1`** | En Docker, `127.0.0.1` es el loopback interno y rechazará peticiones que vengan de fuera del contenedor. | `HTTPServer(("0.0.0.0", 8080), ...)` |
 | **6. Usa la forma `exec` en `CMD`** | Usar corchetes `["python", "app.py"]` permite que el proceso reciba señales del SO (`SIGTERM`) para apagarse limpiamente. | `CMD ["python", "app.py"]` en vez de `CMD python app.py`. |
+| **7. Escanea vulnerabilidades con Trivy** | Detecta CVEs en paquetes del SO y dependencias antes de desplegar en producción. | `trivy image --severity HIGH,CRITICAL mi-app:v1.0`<br>*(Ver [Guía de Trivy](../recursos/guia-trivy-seguridad.md))* |
 
 ---
 
