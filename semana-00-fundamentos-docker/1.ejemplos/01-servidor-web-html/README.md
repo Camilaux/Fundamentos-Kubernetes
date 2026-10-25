@@ -95,7 +95,25 @@ exit
 
 ---
 
-### 6. Detener y limpiar
+### 6. Escaneo de Seguridad con Trivy (CLI)
+Audita la imagen recién construida directamente desde tu línea de comandos con el paquete `trivy` para comprobar que la capa base de Alpine Nginx no contenga vulnerabilidades críticas:
+
+```bash
+# 1. Escanear la imagen construida (CLI como paquete):
+trivy image --severity HIGH,CRITICAL mi-web-estatica:v1.0
+
+# 2. Auditar buenas prácticas en el Dockerfile:
+trivy config semana-00-fundamentos-docker/1.ejemplos/01-servidor-web-html
+
+# Alternativa mediante contenedor efímero (si no tienes el paquete instalado):
+docker run --rm -v /var/run/docker.sock:/var/run/docker.sock aquasec/trivy:latest image --severity HIGH,CRITICAL mi-web-estatica:v1.0
+```
+
+> 🛡️ **Resultado esperado:** Gracias a `nginx:alpine`, Trivy mostrará **0 vulnerabilidades de severidad ALTA o CRÍTICA**. Consulta la [Guía de Seguridad con Trivy](../../../recursos/guia-trivy-seguridad.md) para más opciones de filtrado.
+
+---
+
+### 7. Detener y limpiar
 Cuando termines de practicar:
 
 ```bash

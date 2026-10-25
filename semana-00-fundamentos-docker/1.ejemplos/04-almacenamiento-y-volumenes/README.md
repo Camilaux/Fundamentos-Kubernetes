@@ -15,7 +15,7 @@ Pero la **libreta de ventas** (`ventas.json`) donde anotas a quién le fías y c
 
 ---
 
-## 🔬 Los 3 Experimentos Prácticos
+## 🔬 Los Experimentos Prácticos y Auditoría de Seguridad
 
 ### Paso 0: Construir la imagen
 Desde la raíz del repositorio:
@@ -143,6 +143,25 @@ Un **Bind Mount** conecta directamente una carpeta de tu máquina anfitrión (Ho
    cat ./mis-datos-locales/ventas.json
    ```
    ✨ **¡Magia!** El archivo existe en tu disco local. Si editas `ventas.json` desde tu editor de código o terminal, el contenedor verá el cambio en tiempo real.
+
+---
+
+### 🧪 Experimento 4: Auditoría de Seguridad con Trivy (CLI)
+
+En aplicaciones con almacenamiento de datos persistentes (como `ventas.json`), la seguridad del contenedor es fundamental. Ejecuta el análisis de la imagen y de las instrucciones de construcción directamente desde tu línea de comandos con el paquete `trivy`:
+
+```bash
+# 1. Escanear vulnerabilidades conocidas (CVEs) en la imagen:
+trivy image --severity HIGH,CRITICAL app-ventas:v1.0
+
+# 2. Auditar buenas prácticas en el Dockerfile:
+trivy config semana-00-fundamentos-docker/1.ejemplos/04-almacenamiento-y-volumenes
+
+# Alternativa mediante contenedor efímero si no tienes el paquete instalado:
+docker run --rm -v /var/run/docker.sock:/var/run/docker.sock aquasec/trivy:latest image --severity HIGH,CRITICAL app-ventas:v1.0
+```
+
+> 🛡️ **Resultado esperado:** La imagen reportará **0 vulnerabilidades de severidad alta o crítica**. Al separar los datos en volúmenes y mantener la imagen inmutable y limpia, tu aplicación cumple con los estándares para Kubernetes. Consulta la [Guía de Seguridad con Trivy](../../../recursos/guia-trivy-seguridad.md).
 
 ---
 

@@ -135,7 +135,28 @@ Observa la sección `Containers`: verás a `greca-central` y a `carrito-san-anto
 
 ---
 
-### 7. Limpieza
+### 7. Escaneo de Seguridad de Microservicios con Trivy (CLI)
+En una arquitectura distribuida, cada contenedor de la red debe ser escaneado por separado. Ejecuta el análisis desde la línea de comandos con el paquete `trivy`:
+
+```bash
+# 1. Escanear la imagen del backend (Greca Central):
+trivy image --severity HIGH,CRITICAL greca-backend:v1.0
+
+# 2. Escanear la imagen del cliente (Carrito San Antonio):
+trivy image --severity HIGH,CRITICAL carrito-cliente:v1.0
+
+# 3. Auditar la configuración de los Dockerfiles:
+trivy config semana-00-fundamentos-docker/1.ejemplos/03-redes-comunicacion-contenedores
+
+# Alternativa mediante contenedor efímero si no tienes el paquete instalado:
+docker run --rm -v /var/run/docker.sock:/var/run/docker.sock aquasec/trivy:latest image --severity HIGH,CRITICAL greca-backend:v1.0
+```
+
+> 🛡️ **Resultado esperado:** Ambos microservicios usan `python:3.12-alpine`, por lo que obtendrás un reporte limpio con **0 vulnerabilidades de severidad alta o crítica**. Consulta la [Guía de Seguridad con Trivy](../../../recursos/guia-trivy-seguridad.md).
+
+---
+
+### 8. Limpieza
 Al terminar la práctica:
 
 ```bash

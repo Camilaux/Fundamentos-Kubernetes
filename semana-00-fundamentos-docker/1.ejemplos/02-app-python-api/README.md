@@ -140,9 +140,28 @@ docker run -d -p 8081:8080 -e MENSAJE="¡Saludos desde el Poblado en Medellín! 
 curl http://localhost:8081
 ```
 
+### 7. Escaneo de Seguridad con Trivy (CLI)
+Antes de llevar este microservicio a un clúster de Kubernetes, audita la imagen y el `Dockerfile` directamente desde tu terminal utilizando el paquete `trivy`:
+
+```bash
+# 1. Escanear vulnerabilidades conocidas (CVEs) en la imagen:
+trivy image --severity HIGH,CRITICAL mi-api-cnm:v1.0
+
+# 2. Auditar buenas prácticas y seguridad en la configuración del Dockerfile:
+trivy config semana-00-fundamentos-docker/1.ejemplos/02-app-python-api
+
+# Alternativa mediante contenedor efímero (si no tienes el paquete instalado en tu host):
+docker run --rm -v /var/run/docker.sock:/var/run/docker.sock aquasec/trivy:latest image --severity HIGH,CRITICAL mi-api-cnm:v1.0
+```
+
+> 🛡️ **Resultado de la auditoría:**
+> * Al usar `python:3.12-alpine`, la imagen no contiene CVEs críticos ni altos conocidos.
+> * Al configurar el usuario sin privilegios `appuser` (UID: 10001), `trivy config` aprobará la validación de *non-root container execution*.
+> * Consulta la [Guía de Seguridad con Trivy](../../../recursos/guia-trivy-seguridad.md) para más opciones avanzadas.
+
 ---
 
-### 7. Limpieza
+### 8. Limpieza
 Detén y elimina los contenedores de prueba:
 
 ```bash
