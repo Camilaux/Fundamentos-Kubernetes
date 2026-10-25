@@ -1,101 +1,62 @@
-# 📂 Ejemplos Prácticos de Docker (Semana 0)
+# 📂 Laboratorios y Ejemplos Prácticos de Docker (Semana 0)
 
-En esta carpeta encontrarás los laboratorios prácticos organizados modularmente para aprender a empaquetar, conectar y persistir aplicaciones con Docker antes de dar el salto a Kubernetes.
-
----
-
-## 📑 Índice de Ejemplos
-
-| Carpeta | Tipo de Aplicación | Concepto Clave | Enlace a la Guía |
-| :--- | :--- | :--- | :--- |
-| [`01-servidor-web-html/`](./01-servidor-web-html) | Sitio Web Estático (Nginx) | `FROM`, `COPY`, `EXPOSE` y `CMD` básico con Nginx en Alpine (~25MB). | 🔗 [Ver Laboratorio 01](./01-servidor-web-html/README.md) |
-| [`02-app-python-api/`](./02-app-python-api) | API REST en Python (Microservicio) | Usuario no-root (`appuser`), `COPY --chown`, `ENV`, `.dockerignore`, PID 1 y UI interactiva. | 🔗 [Ver Laboratorio 02](./02-app-python-api/README.md) |
-| [`03-redes-comunicacion-contenedores/`](./03-redes-comunicacion-contenedores) | Microservicios en Red Bridge | Redes personalizadas (`docker network create`), DNS interno por nombre y aislamiento. | 🔗 [Ver Laboratorio 03](./03-redes-comunicacion-contenedores/README.md) |
-| [`04-almacenamiento-y-volumenes/`](./04-almacenamiento-y-volumenes) | API con Persistencia de Ventas | Datos efímeros vs **Named Volumes** (`docker volume`) vs **Bind Mounts** (`-v`). | 🔗 [Ver Laboratorio 04](./04-almacenamiento-y-volumenes/README.md) |
-| [`05-registro-imagenes-harbor/`](./05-registro-imagenes-harbor) | Registro de Imágenes (Harbor) | `docker login`, `docker tag`, `docker push`, `docker pull`, Cuentas Robot y escaneo con Trivy. | 🔗 [Ver Laboratorio 05](./05-registro-imagenes-harbor/README.md) |
-| [`06-ia-local-ollama/`](./06-ia-local-ollama) | IA Local con Ollama (Asistente DevOps) | LLM en CPU, límites `--memory`/`--cpus`, volumen para modelos, `Modelfile`, API REST en `127.0.0.1`. | 🔗 [Ver Laboratorio 06](./06-ia-local-ollama/README.md) |
+En esta carpeta encontrarás los **6 laboratorios prácticos oficiales** de la Semana 0, organizados de forma incremental. Cada laboratorio está diseñado para resolver un problema real de empaquetado, redes, persistencia, seguridad o distribución antes de dar el salto a Kubernetes.
 
 ---
 
-## 🛡️ Escaneo de Seguridad de Imágenes con Trivy
+## 🗺️ Resumen Ejecutivo de los 6 Laboratorios
 
-En entornos reales de Kubernetes y producción, construir la imagen es solo el primer paso. Toda imagen debe ser **auditada en busca de vulnerabilidades (CVEs)** y malas configuraciones antes de desplegarse.
-
-Para esto usamos **Trivy**, el escáner de seguridad estándar de la industria Cloud Native.
-
-> 📖 **Guía Completa:** Puedes consultar todos los comandos y detalles en [**Guía de Seguridad con Trivy**](../../recursos/guia-trivy-seguridad.md).
+| # | Laboratorio | Tipo de Aplicación | Conceptos Clave de Docker | Herramientas Utilizadas | Guía Paso a Paso |
+| :-: | :--- | :--- | :--- | :--- | :--- |
+| **01** | [`01-servidor-web-html/`](./01-servidor-web-html) | Sitio Web Estático (Nginx) | `FROM`, `COPY`, `EXPOSE` y `CMD` en primer plano (`daemon off;`) sobre imagen minimalista Alpine (~25 MB). | Docker, Nginx, Alpine | 🔗 [Ver Laboratorio 01](./01-servidor-web-html/README.md) |
+| **02** | [`02-app-python-api/`](./02-app-python-api) | API REST en Python (Microservicio) | Usuario sin privilegios (`USER appuser`), `COPY --chown`, variables `ENV`, `.dockerignore`, PID 1 y UI interactiva. | Docker, Python, Alpine | 🔗 [Ver Laboratorio 02](./02-app-python-api/README.md) |
+| **03** | [`03-redes-comunicacion-contenedores/`](./03-redes-comunicacion-contenedores) | Microservicios en Red Bridge | Redes personalizadas (`docker network create`), resolución DNS automática por nombre y aislamiento entre contenedores. | Docker Networks, DNS interno | 🔗 [Ver Laboratorio 03](./03-redes-comunicacion-contenedores/README.md) |
+| **04** | [`04-almacenamiento-y-volumenes/`](./04-almacenamiento-y-volumenes) | API con Persistencia de Ventas | Capa efímera vs **Named Volumes** (`docker volume`) vs **Bind Mounts** (`-v`), evitando pérdida de datos al recrear contenedores. | Docker Volumes, Bind Mounts | 🔗 [Ver Laboratorio 04](./04-almacenamiento-y-volumenes/README.md) |
+| **05** | [`05-registro-imagenes-harbor/`](./05-registro-imagenes-harbor) | Registro Empresarial de Imágenes | Autenticación (`docker login`), nomenclatura OCI (`docker tag`), publicación (`docker push`), descarga (`docker pull`) y Cuentas Robot. | Docker CLI, Harbor, Trivy | 🔗 [Ver Laboratorio 05](./05-registro-imagenes-harbor/README.md) |
+| **06** | [`06-ia-local-ollama/`](./06-ia-local-ollama) | IA Local y Asistente DevOps (LLM) | Inferencia de LLM en CPU, límites de recursos (`--memory`, `--cpus`), `Modelfile` personalizado y API REST en localhost (`127.0.0.1:11434`). | Docker, Ollama, Qwen2.5 | 🔗 [Ver Laboratorio 06](./06-ia-local-ollama/README.md) |
 
 ---
 
-### 1. ¿Cómo ejecutar Trivy?
+## 📋 ¿Qué Aprenderás en Cada Laboratorio?
 
-Tienes dos opciones excelentes:
+```mermaid
+flowchart LR
+    L1["01. Servidor Web\n(HTML + Nginx)"] --> L2["02. API Python\n(Non-root + ENV)"]
+    L2 --> L3["03. Redes Bridge\n(DNS por Nombre)"]
+    L3 --> L4["04. Volúmenes\n(Persistencia)"]
+    L4 --> L5["05. Harbor Registry\n(Tag, Push & Pull)"]
+    L5 --> L6["06. IA Local\n(Ollama en CPU)"]
 
-#### Opción A: Sin instalar nada (Usando el contenedor oficial de Docker) ⭐
-No necesitas instalar binarios en tu máquina. Ejecuta Trivy directamente como un contenedor efímero:
-
-```bash
-docker run --rm \
-  -v /var/run/docker.sock:/var/run/docker.sock \
-  -v $HOME/.cache/trivy:/root/.cache/ \
-  aquasec/trivy:latest image <nombre-imagen>:<tag>
+    style L1 fill:#e1f5fe,stroke:#0288d1,stroke-width:2px,color:#000
+    style L2 fill:#e8f5e9,stroke:#388e3c,stroke-width:2px,color:#000
+    style L3 fill:#fff3e0,stroke:#f57c00,stroke-width:2px,color:#000
+    style L4 fill:#fce4ec,stroke:#c2185b,stroke-width:2px,color:#000
+    style L5 fill:#e8eaf6,stroke:#3f51b5,stroke-width:2px,color:#000
+    style L6 fill:#f3e5f5,stroke:#7b1fa2,stroke-width:2px,color:#000
 ```
 
-#### Opción B: Instalación nativa por CLI (macOS con Homebrew)
-```bash
-brew install trivy
-```
+1. **[01-servidor-web-html](./01-servidor-web-html/README.md):** Tu primer contenedor web funcional. Aprende por qué Nginx necesita correr en primer plano para mantener vivo el contenedor y cómo servir archivos estáticos con imágenes ultra ligeras.
+2. **[02-app-python-api](./02-app-python-api/README.md):** Buenas prácticas obligatorias de producción. Crea un usuario no-root (`appuser`), parametriza con variables de entorno (`ENV`), excluye archivos innecesarios con `.dockerignore` y prueba la app en una interfaz web animada.
+3. **[03-redes-comunicacion-contenedores](./03-redes-comunicacion-contenedores/README.md):** Conecta dos microservicios (Greca Backend y Carrito Cliente) mediante una red bridge personalizada y comprueba por qué `localhost` falla entre contenedores mientras el DNS interno de Docker resuelve por nombre.
+4. **[04-almacenamiento-y-volumenes](./04-almacenamiento-y-volumenes/README.md):** Demuestra la diferencia entre perder todos los datos en la capa efímera al borrar un contenedor versus persistirlos de forma segura usando **Named Volumes** o sincronizarlos en vivo con **Bind Mounts**.
+5. **[05-registro-imagenes-harbor](./05-registro-imagenes-harbor/README.md):** Distribuye tus imágenes en un registro empresarial. Aprende las reglas de etiquetado OCI (`docker tag`), la autenticación con Cuentas Robot (`docker login`), la subida eficiente por capas (`docker push`) y la descarga limpia (`docker pull`).
+6. **[06-ia-local-ollama](./06-ia-local-ollama/README.md):** Ejecuta un modelo de lenguaje (Qwen2.5) 100% en CPU dentro de un contenedor. Limita memoria (`--memory`) y procesadores (`--cpus`), crea un asistente DevOps personalizado con un `Modelfile` y consúltalo vía API REST en `127.0.0.1`.
 
 ---
 
-### 2. Escaneo en Terminal (CLI) — La forma más rápida y recomendada
+## 🛠️ Herramientas del Ecosistema: Enlaces a sus Guías Detalladas
 
-Escanea las imágenes construidas en los ejemplos:
+Para mantener estos laboratorios prácticos y concisos, la teoría profunda, instalación y comandos avanzados de cada herramienta de soporte se encuentran documentados en la carpeta [**`recursos/`**](../../recursos):
 
-```bash
-# 1. Escanear la API de Python (Ejemplo 02)
-trivy image --severity HIGH,CRITICAL mi-api-cnm:v1.0
-
-# 2. Escanear el servidor web Nginx (Ejemplo 01)
-trivy image --severity HIGH,CRITICAL mi-web-estatica:v1.0
-
-# 3. Escanear ignorando vulnerabilidades sin parche disponible
-trivy image --ignore-unfixed --severity HIGH,CRITICAL mi-api-cnm:v1.0
-```
-
----
-
-### 3. Generar Reporte Visual en la Web (HTML Interactivo)
-
-Si prefieres ver los resultados en tu **navegador web** en lugar de la terminal, Trivy permite exportar un reporte interactivo en formato HTML:
-
-```bash
-# Con Trivy instalado nativamente:
-trivy image --format template --template "@contrib/html.tpl" -o reporte-seguridad.html mi-api-cnm:v1.0
-open reporte-seguridad.html
-
-# O ejecutándolo directamente con Docker:
-docker run --rm -v /var/run/docker.sock:/var/run/docker.sock \
-  -v "$(pwd)":/salida \
-  aquasec/trivy:latest image \
-  --format template --template "@contrib/html.tpl" \
-  -o /salida/reporte-seguridad.html mi-api-cnm:v1.0
-open reporte-seguridad.html
-```
-
-> **¿Qué verás en la web?** Una página moderna e interactiva con el resumen de severidades (Total de vulnerabilidades, Críticas, Altas, Medias), listado de paquetes afectados, links directos a las bases de datos de CVEs y la versión exacta que corrige el fallo (*Fixed Version*).
-
----
-
-### 4. Auditar el `Dockerfile` antes de construir (IaC Misconfigurations)
-Trivy también analiza el archivo `Dockerfile` para alertarte si olvidaste definir un usuario no-root o si dejaste configuraciones inseguras:
-
-```bash
-trivy config semana-00-fundamentos-docker/1.ejemplos/02-app-python-api/Dockerfile
-```
+| Herramienta | ¿Para qué se usa en el workshop? | Guía Completa de Referencia |
+| :--- | :--- | :--- |
+| 🛡️ **Trivy** | Escaneo de vulnerabilidades (CVEs) en paquetes de sistema operativo, dependencias de código y malas prácticas en `Dockerfile`. | 📖 [**Guía Completa de Trivy**](../../recursos/guia-trivy-seguridad.md) |
+| ⚓ **Harbor** | Registro empresarial OCI privado (CNCF Graduated) con control de acceso RBAC, Cuentas Robot, políticas de seguridad y replicación. | 📖 [**Guía Empresarial de Harbor**](../../recursos/guia-harbor-registry.md) |
+| 🤖 **Ollama** | Motor de inferencia local de Modelos de Lenguaje (LLMs) en contenedores, sin GPU obligatoria, sin costos por token y con total privacidad. | 📖 [**Guía de IA Local con Ollama**](../../recursos/guia-ollama-ia-local.md) |
+| ☕ **Analogía del Tinto** | El hilo conductor pedagógico que explica desde una taza de café en el Metro de Medellín hasta Pods, Services y Deployments. | 📖 [**De un Tinto a Kubernetes**](../../recursos/de-un-tinto-a-kubernetes.md) |
 
 ---
 
 > [!TIP]
 > 👉 **¿Cuándo entra Kubernetes?**  
-> En la **Semana 1** aprenderás a instalar tu clúster local con **Kind** y a orquestar contenedores usando Pods, Services y Deployments.
+> En la **Semana 1** aprenderás a instalar tu clúster local con **Kind** y a orquestar estas mismas imágenes usando Pods, Services y Deployments en YAML.

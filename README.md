@@ -17,6 +17,7 @@
 [☕ Guía del Tinto](./recursos/de-un-tinto-a-kubernetes.md) •
 [⚓ Guía de Harbor](./recursos/guia-harbor-registry.md) •
 [🛡️ Guía de Trivy](./recursos/guia-trivy-seguridad.md) •
+[🤖 Guía de Ollama](./recursos/guia-ollama-ia-local.md) •
 [🚀 Empezar Ahora](#paso-0-prepara-tu-laboratorio) •
 [🗺️ Mapa de Ruta](#️-mapa-de-ruta) •
 [🏆 Rangos de Navegación](#-rangos-de-navegación-gamificación) •

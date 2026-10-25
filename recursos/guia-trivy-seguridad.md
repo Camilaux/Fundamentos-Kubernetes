@@ -152,3 +152,18 @@ trivy image --severity HIGH,CRITICAL python:3.12-alpine
 | `python:3.12-alpine` | ~50 MB | **0 CVEs** | 🟢 Mínima (solo el kernel mínimo y Python) |
 
 ¡Este simple escaneo le demuestra a cualquier equipo por qué las buenas prácticas de la Semana 0 son indispensables para Kubernetes!
+
+---
+
+## 📚 Índice de Guías y Recursos Complementarios
+
+| Documento | Descripción | Enlace |
+| :--- | :--- | :--- |
+| **☕ De un Tinto Colombiano a Kubernetes** | Guía narrativa para entender Pods, Services, Deployments y la hora pico con la analogía del Metro de Medellín. | [Ver Guía del Tinto](./de-un-tinto-a-kubernetes.md) |
+| **⚓ Guía Empresarial de Harbor** | Almacenamiento privado, control de acceso (RBAC), cuentas robot y políticas de prevención. | [Ver Guía de Harbor](./guia-harbor-registry.md) |
+| **🤖 Guía de IA Local con Ollama** | Ejecución de LLMs locales en Docker en CPU/GPU sin costos por token y con privacidad total. | [Ver Guía de Ollama](./guia-ollama-ia-local.md) |
+| **🧪 Laboratorios de la Semana 0** | Resumen y paso a paso de los 6 laboratorios prácticos de Docker. | [Ver Laboratorios](../semana-00-fundamentos-docker/1.ejemplos/README.md) |
+
+---
+
+*Desarrollado para la comunidad Cloud Native Medellín 🏔️☕ — ¡De Cero a Capitán en Kubernetes!*

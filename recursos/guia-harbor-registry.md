@@ -376,6 +376,7 @@ Al aplicar este manifiesto (`kubectl apply -f pod.yaml`), el Kubelet del nodo le
 | :--- | :--- | :--- |
 | **☕ De un Tinto Colombiano a Kubernetes** | Guía narrativa para entender Pods, Services, Deployments y la hora pico con la analogía del Metro de Medellín. | [Ver Guía del Tinto](./de-un-tinto-a-kubernetes.md) |
 | **🛡️ Guía Completa de Seguridad con Trivy** | Cómo instalar y ejecutar Trivy por CLI, detectar CVEs, auditar Dockerfiles y generar reportes HTML. | [Ver Guía de Trivy](./guia-trivy-seguridad.md) |
+| **🤖 Guía de IA Local con Ollama** | Ejecución de LLMs locales en Docker en CPU/GPU sin costos por token y con privacidad total. | [Ver Guía de Ollama](./guia-ollama-ia-local.md) |
 | **🧪 Laboratorio Práctico 05 (Harbor)** | Ejercicio paso a paso para etiquetar, publicar y validar imágenes en Harbor. | [Ver Ejemplo 05](../semana-00-fundamentos-docker/1.ejemplos/05-registro-imagenes-harbor/README.md) |
 
 ---
