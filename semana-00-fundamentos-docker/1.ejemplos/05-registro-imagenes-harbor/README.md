@@ -1,50 +1,50 @@
-# ⚓ Ejemplo 05: Registro de Imágenes con Harbor (Tag, Push, Pull y Kubernetes)
+# ⚓ Ejemplo 05: Registro y Publicación de Imágenes con Harbor (Tag, Push y Pull)
 
-En este laboratorio aprenderás cómo almacenar, versionar, escanear y distribuir de forma segura las imágenes que construiste en los ejemplos anteriores (`01`, `02`, `03` y `04`) utilizando **Harbor**, el registro de contenedores empresarial de código abierto graduado de la **CNCF**.
+En este laboratorio aprenderás cómo almacenar, versionar, escanear y distribuir de forma segura las imágenes que construiste en los laboratorios anteriores (`01`, `02`, `03` y `04`) utilizando **Harbor**, el registro de contenedores empresarial de código abierto graduado de la **CNCF**.
 
-Además, aprenderás a generar **Cuentas Robot**, configurar políticas de escaneo automático con **Trivy** y conectar tu clúster de **Kubernetes** a un registro privado mediante **`imagePullSecrets`**.
+Aprenderás el ciclo de vida completo de distribución en Docker: cómo autenticarte con `docker login`, cómo renombrar tus imágenes locales con `docker tag`, cómo publicarlas con `docker push`, cómo inspeccionar el escaneo de vulnerabilidades con **Trivy** en la web de Harbor y cómo descargarlas y ejecutarlas en otro entorno con `docker pull`.
 
 ---
 
 ## ☕ La Analogía Paisa: La Bodega Central de Café de Exportación
 
-* En los laboratorios anteriores aprendiste a tostar el café (`Dockerfile`) y a empacarlo en bolsas selladas al vacío (`docker build`).
-* Pero si dejas tus bolsas tiradas en la acera de la estación del Metro o en un puesto informal en la calle (**Docker Hub público** sin control), cualquiera puede adulterarlas, robarlas o puedes quedarte sin stock si te aplican límites de descarga.
+* En los laboratorios anteriores aprendiste a tostar el café (`Dockerfile`) y a empacarlo en bolsas selladas al vacío inmutables (`docker build`).
+* Pero si dejas tus bolsas únicamente en la cocina de tu casa (**tu máquina local**), nadie más en el mundo puede preparar café con tu receta.
+* Y si las dejas en una acera pública sin control (**Docker Hub público** sin autenticación), cualquiera puede ver tu código o puedes quedarte sin servicio por límites de descarga.
 * **Harbor es la Bodega Central Blindada de la Federación Cafetera:**
-  * **Portería con carnet (`docker login`):** Nadie entra sin autorización ni credenciales.
-  * **Sección de lotes (`Proyectos` en Harbor):** Área exclusiva para tu equipo (`cafeteria` o `cloud-native-medellin`).
-  * **Filtro de sanidad (Trivy Integrado):** Antes de colocar una bolsa en la estantería, un escáner revisa que no tenga plagas ni químicos dañinos (CVEs). Si no pasa la prueba, la bodega prohíbe despacharla al público (**Vulnerability Prevention Policy**).
-  * **Pase de conductor para camiones de reparto (`Robot Accounts`):** Un carnet temporal de solo lectura o solo escritura para que los camiones de Kubernetes y de los pipelines de CI/CD recojan las bolsas sin darles la llave maestra de la oficina del gerente.
+  * **Portería con carnet (`docker login`):** Solo personas o sistemas autorizados pueden entrar a guardar o retirar bolsas.
+  * **Sección de lotes (`Proyectos` en Harbor):** Área exclusiva para tu equipo o empresa (ej: `cafeteria` o `cloud-native-medellin`).
+  * **Filtro de sanidad (Trivy Integrado):** Antes de acomodar una bolsa en la estantería, un escáner revisa que no tenga plagas ni químicos dañinos (CVEs). Si no pasa la prueba, la bodega prohíbe despacharla (**Vulnerability Prevention Policy**).
+  * **Pase de conductor para camiones de reparto (`Robot Accounts`):** Un permiso especial para que los servidores descarguen las bolsas sin entregarles la contraseña personal del administrador.
 
 ---
 
-## 🏗️ Flujo de Trabajo: Del Código a Kubernetes pasando por Harbor
+## 🏗️ Ciclo de Distribución de Contenedores con Docker y Harbor
 
 ```mermaid
 sequenceDiagram
     autonumber
-    actor Dev as 👨‍💻 Desarrollador / CI/CD
-    participant Local as 💻 Docker Local (Host)
+    actor Dev as 💻 Desarrollador (Tu Máquina)
     participant Harbor as ⚓ Harbor Registry
-    participant K8s as ☸️ Kubernetes (Cluster)
+    participant Servidor as 🚀 Servidor de Destino / Producción
 
-    Note over Local: 1. Construcción y Etiquetado
-    Dev->>Local: docker build -t mi-api-cnm:v1.0
-    Dev->>Local: docker tag mi-api-cnm:v1.0 harbor.local/cafeteria/mi-api-cnm:v1.0
+    Note over Dev: 1. Empaque y Etiquetado Local
+    Dev->>Dev: docker build -t mi-api-cnm:v1.0 .
+    Dev->>Dev: docker tag mi-api-cnm:v1.0 harbor.local/cafeteria/mi-api-cnm:v1.0
 
-    Note over Local,Harbor: 2. Autenticación y Publicación
-    Dev->>Harbor: docker login harbor.local (Usa Robot Account)
+    Note over Dev,Harbor: 2. Autenticación y Publicación
+    Dev->>Harbor: docker login harbor.local
     Dev->>Harbor: docker push harbor.local/cafeteria/mi-api-cnm:v1.0
 
     Note over Harbor: 3. Auditoría en Bodega
     Harbor->>Harbor: Escaneo automático con Trivy
-    Harbor->>Harbor: Verificar Política de Severidad (CVEs)
+    Harbor->>Harbor: Verificar Política de Vulnerabilidades
 
-    Note over Harbor,K8s: 4. Despliegue en Kubernetes
-    K8s->>K8s: kubectl apply -f pod-harbor.yaml (imagePullSecrets)
-    K8s->>Harbor: Solicitar imagen con token de Robot Account
-    Harbor-->>K8s: Entrega de capas OCI
-    K8s->>K8s: Pod en estado Running ✅
+    Note over Harbor,Servidor: 4. Descarga y Ejecución en Destino
+    Servidor->>Harbor: docker login harbor.local
+    Servidor->>Harbor: docker pull harbor.local/cafeteria/mi-api-cnm:v1.0
+    Servidor->>Servidor: docker run -d -p 8080:8080 ...
+    Note over Servidor: Contenedor en ejecución ✅
 ```
 
 ---
@@ -53,8 +53,7 @@ sequenceDiagram
 
 ```text
 05-registro-imagenes-harbor/
-├── docker-compose.yml        # Entorno local de pruebas (Registry + Web UI)
-├── pod-harbor-ejemplo.yaml   # Manifiesto de Pod en K8s con imagePullSecrets
+├── docker-compose.yml        # Entorno local de pruebas (Registry OCI + Web UI)
 └── README.md                 # Esta guía paso a paso
 ```
 
@@ -62,12 +61,12 @@ sequenceDiagram
 
 ## 🚀 Flujo Práctico Paso a Paso
 
-### 1. Entorno de Harbor para Practicar
+### 1. Entorno de Registro para Practicar
 
-Tienes dos maneras de realizar esta práctica:
+Tienes dos formas de realizar este laboratorio:
 
 * **Opción A (Instancia Empresarial / Servidor Harbor):**  
-  Si tu empresa, comunidad o laboratorio ya cuenta con una instancia de Harbor (ej: `https://harbor.mi-empresa.com` o la IP de tu servidor), usa esa URL y tus credenciales asignadas.
+  Si tu organización o comunidad dispone de un servidor Harbor (ej: `https://harbor.mi-empresa.com`), usa esa URL y tus credenciales asignadas.
 * **Opción B (Laboratorio Local Rápido):**  
   Si estás en tu propia máquina y deseas simular el registro con interfaz web de inmediato, levanta el registro local incluido en esta carpeta:
   ```bash
@@ -82,19 +81,18 @@ Tienes dos maneras de realizar esta práctica:
 Para interactuar con un registro remoto o protegido, debes iniciar sesión desde tu terminal:
 
 ```bash
-# Formato:
+# Formato general:
 docker login <host-del-registro> -u <usuario> -p <contraseña>
 
-# Ejemplo con Harbor empresarial:
+# Ejemplo con Harbor:
 docker login harbor.cloudnative.local:8080 -u "admin" -p "Harbor12345"
 
 # O usando el token de una Cuenta Robot (Buena práctica de seguridad):
-docker login harbor.cloudnative.local:8080 -u "robot$k8s-deployer" -p "tu-token-secreto"
+docker login harbor.cloudnative.local:8080 -u "robot$ci-deployer" -p "tu-token-secreto"
 ```
 
 > ✅ **Resultado exitoso:**
 > ```text
-> WARNING! Using --password via the CLI is insecure. Use --password-stdin.
 > Login Succeeded
 > ```
 
@@ -104,24 +102,24 @@ docker login harbor.cloudnative.local:8080 -u "robot$k8s-deployer" -p "tu-token-
 
 En la interfaz web de Harbor:
 1. Haz clic en **"+ New Project"** (Nuevo Proyecto).
-2. Nómbralo: `cafeteria` (o el nombre de tu equipo/app).
+2. Nómbralo: `cafeteria` (o el nombre de tu aplicación).
 3. Selecciona el nivel de acceso:
-   * **Private (Privado):** Recomendado para producción. Solo usuarios y robots autenticados pueden descargar (`pull`) o subir (`push`).
+   * **Private (Privado):** Recomendado en entornos reales. Solo usuarios autenticados pueden descargar (`pull`) o subir (`push`).
    * **Public (Público):** Cualquiera en la red puede descargar la imagen sin autenticarse.
-4. Marca la casilla **"Automatically scan images on push"** (Escaneo automático con Trivy).
+4. Marca la casilla **"Automatically scan images on push"** para activar el escaneo automático de vulnerabilidades con Trivy.
 
 ---
 
 ### 4. Etiquetar las Imágenes de los Laboratorios Anteriores (`docker tag`)
 
-Docker requiere que la imagen tenga en su nombre el **host del registro** y el **proyecto**:
+Por defecto, Docker asume que una imagen sin prefijo pertenece a Docker Hub. Para indicarle que debe enviarse a Harbor, el nombre de la imagen debe incluir la **URL del registro** y el **proyecto**:
 
-$$\text{Nomenclatura:} \quad \mathbf{\langle host\text{-}registro\rangle} / \mathbf{\langle proyecto\rangle} / \mathbf{\langle imagen\rangle} : \mathbf{\langle tag\rangle}$$
+$$\text{Nomenclatura Obligatoria:} \quad \mathbf{\langle host\text{-}registro\rangle} / \mathbf{\langle proyecto\rangle} / \mathbf{\langle nombre\text{-}imagen\rangle} : \mathbf{\langle tag\rangle}$$
 
-Vamos a etiquetar las imágenes que construiste en los ejemplos `01`, `02`, `03` y `04`:
+Vamos a etiquetar las imágenes que construiste en los ejemplos anteriores (`01`, `02`, `03` y `04`):
 
 ```bash
-# Definimos una variable con la URL de nuestro Harbor (ajusta según tu entorno):
+# Definimos las variables de nuestro registro (ajusta según tu entorno):
 REGISTRO="harbor.cloudnative.local:8080"
 PROYECTO="cafeteria"
 
@@ -138,16 +136,18 @@ docker tag greca-backend:v1.0 ${REGISTRO}/${PROYECTO}/greca-backend:v1.0
 docker tag app-ventas:v1.0 ${REGISTRO}/${PROYECTO}/app-ventas:v1.0
 ```
 
-Verifica las etiquetas creadas:
+Verifica las nuevas etiquetas creadas en tu máquina:
 ```bash
 docker images | grep ${PROYECTO}
 ```
+
+> 💡 **Nota:** `docker tag` no duplica el peso en tu disco; simplemente crea un alias o puntero hacia las mismas capas que ya tenías compiladas.
 
 ---
 
 ### 5. Subir las Imágenes al Registro (`docker push`)
 
-Ahora sube la imagen de la API al registro:
+Ahora publicamos la imagen en Harbor:
 
 ```bash
 docker push ${REGISTRO}/${PROYECTO}/mi-api-cnm:v1.0
@@ -162,9 +162,9 @@ e19df2d63421: Pushed
 v1.0: digest: sha256:4d87a412b1... size: 949
 ```
 
-> 💡 **Eficiencia de Capas:** Si subes otra imagen basada en `python:3.12-alpine` (como `greca-backend:v1.0`), verás que Docker indica `Layer already exists` y no vuelve a transferir los megabytes de la imagen base por la red.
+> ⚡ **Eficiencia de Capas:** Si luego subes `greca-backend:v1.0` (que también está basada en `python:3.12-alpine`), verás que Docker indica `Layer already exists` y no vuelve a transferir los megabytes de la base por la red.
 
-Sube también las demás imágenes:
+Sube las demás imágenes:
 ```bash
 docker push ${REGISTRO}/${PROYECTO}/mi-web-estatica:v1.0
 docker push ${REGISTRO}/${PROYECTO}/greca-backend:v1.0
@@ -175,116 +175,72 @@ docker push ${REGISTRO}/${PROYECTO}/app-ventas:v1.0
 
 ### 6. Inspección y Escaneo de Seguridad en la Web de Harbor
 
-Entra a la interfaz de Harbor y navega al proyecto `cafeteria`:
+Entra a la interfaz de Harbor y abre el proyecto `cafeteria`:
 1. **Artefactos OCI:** Verás el repositorio `mi-api-cnm` con el tag `v1.0`.
-2. **Digest Criptográfico:** Cada imagen tiene su hash SHA-256 inmutable.
+2. **Digest Criptográfico:** Cada imagen tiene su hash SHA-256 inmutable que garantiza que nadie haya alterado el contenido.
 3. **Escudo de Vulnerabilidades (Trivy):**  
-   Observa el badge de seguridad. Al hacer clic en él, verás el reporte detallado generado automáticamente por Trivy:
-   * Total de vulnerabilidades encontradas (Críticas, Altas, Medias, Bajas).
+   Observa el badge de seguridad. Al hacer clic en él, verás el reporte detallado generado automáticamente:
    * Al haber usado `python:3.12-alpine`, verás **0 vulnerabilidades de severidad alta o crítica**.
 4. **Política de Prevención de Vulnerabilidades:**  
-   En la pestaña **Configuration** de tu proyecto, activa:
+   En la pestaña **Configuration** de tu proyecto, activa la opción:
    * *"Prevent vulnerable images from running"*.
-   * Nivel de severidad: `High` o `Critical`.
-   * A partir de este momento, si una imagen tiene un CVE crítico, Harbor rechazará cualquier `docker pull` o `kubectl pull` automáticamente.
+   * Si una imagen supera el umbral de severidad configurado, Harbor bloqueará cualquier intento de descarga (`docker pull`).
 
 ---
 
-### 7. Probar la Descarga en una Máquina Limpia (`docker pull`)
+### 7. Probar la Descarga y Ejecución en una Máquina Limpia (`docker pull`)
 
-Simulemos que estás en otro servidor o en un nodo de Kubernetes donde la imagen no existe:
+Simulemos que estás en otro servidor donde la imagen no existe:
 
-1. Elimina la copia local de la imagen de tu máquina:
+1. Elimina la copia local de la imagen de tu máquina para forzar la descarga:
    ```bash
    docker rmi ${REGISTRO}/${PROYECTO}/mi-api-cnm:v1.0
    ```
 
-2. Descárgala fresca desde Harbor:
+2. Descarga la imagen fresca desde Harbor:
    ```bash
    docker pull ${REGISTRO}/${PROYECTO}/mi-api-cnm:v1.0
    ```
 
-3. Ejecuta el contenedor desde la imagen descargada del registro:
+3. Corre el contenedor a partir de la imagen descargada del registro:
    ```bash
    docker run -d -p 8080:8080 --name test-harbor ${REGISTRO}/${PROYECTO}/mi-api-cnm:v1.0
    ```
 
-4. Prueba que funcione:
+4. Prueba que la aplicación responde correctamente:
    ```bash
    curl http://localhost:8080
    ```
 
 ---
 
-### 8. ☸️ El Puente a Kubernetes: `imagePullSecrets`
+### 8. Limpieza
 
-Cuando despliegas una aplicación en Kubernetes desde un registro privado de Harbor, los nodos de Kubernetes necesitan credenciales para descargar la imagen.
-
-#### Paso 8.1: Crear el Secreto de Autenticación con `kubectl`
-Usa una **Cuenta Robot** de Harbor para generar el secreto:
-
-```bash
-kubectl create secret docker-registry harbor-credenciales \
-  --docker-server="${REGISTRO}" \
-  --docker-username="robot$k8s-deployer" \
-  --docker-password="tu-token-de-robot" \
-  --docker-email="operaciones@cloudnativemedellin.org"
-```
-
-#### Paso 8.2: Aplicar el Pod con `imagePullSecrets`
-Revisa el archivo de ejemplo incluido [`pod-harbor-ejemplo.yaml`](./pod-harbor-ejemplo.yaml):
-
-```yaml
-apiVersion: v1
-kind: Pod
-metadata:
-  name: api-tinto-desde-harbor
-  labels:
-    app: api-tinto
-spec:
-  # 🔑 Vincula el secreto para autenticarse contra Harbor:
-  imagePullSecrets:
-    - name: harbor-credenciales
-
-  containers:
-    - name: api-cafe
-      # 📦 Imagen alojada en tu registro Harbor:
-      image: harbor.cloudnative.local:8080/cafeteria/mi-api-cnm:v1.0
-      ports:
-        - containerPort: 8080
-          name: http
-      resources:
-        limits:
-          memory: "128Mi"
-          cpu: "200m"
-        requests:
-          memory: "64Mi"
-          cpu: "50m"
-```
-
-Aplica el manifiesto en tu clúster (a partir de la Semana 1 con Kind):
-```bash
-kubectl apply -f semana-00-fundamentos-docker/1.ejemplos/05-registro-imagenes-harbor/pod-harbor-ejemplo.yaml
-```
-
-Verifica que el Pod descargue la imagen y esté en estado `Running`:
-```bash
-kubectl get pods
-```
-
----
-
-### 9. Limpieza
-
-Detén el contenedor de prueba:
+Detén y elimina el contenedor de prueba:
 ```bash
 docker rm -f test-harbor
 ```
 
-Si levantaste el entorno local con docker compose:
+Si levantaste el entorno local de prueba con docker compose:
 ```bash
 docker compose -f semana-00-fundamentos-docker/1.ejemplos/05-registro-imagenes-harbor/docker-compose.yml down -v
 ```
+
+---
+
+## 🌉 ¿Por qué hacemos esto? (Preparándonos para la Semana 1: Kubernetes)
+
+En este laboratorio trabajamos **100% con Docker**. Pero podrías preguntarte:
+> *¿Por qué no simplemente correr contenedores con `docker run` en mi propia máquina? ¿Para qué subir imágenes a un registro como Harbor?*
+
+| En Docker (Hoy) | En Kubernetes (A partir de la Semana 1) |
+| :--- | :--- |
+| Corres el contenedor en tu propio computador con `docker run`. | El clúster corre tus contenedores en **decenas de servidores remotos (Worker Nodes)**. |
+| Tu máquina física tiene el código fuente y el `Dockerfile`. | Los servidores del clúster **NO** tienen tu código local; solo tienen acceso a la red. |
+| Subes la imagen manualmente con `docker push`. | Kubernetes descarga automáticamente (`pull`) estas mismas imágenes de Harbor para encender réplicas en cualquier nodo. |
+| Usas `docker login` en tu terminal personal. | Kubernetes se autentica contra Harbor usando una credencial llamada **`imagePullSecrets`**. |
+
+¡Todo lo que aprendiste hoy sobre `docker tag`, `docker push`, deduplicación de capas y escaneo en Harbor es exactamente lo que necesitarás cuando construyamos nuestro clúster en la siguiente semana!
 
 ---
 
@@ -294,10 +250,10 @@ docker compose -f semana-00-fundamentos-docker/1.ejemplos/05-registro-imagenes-h
 | :--- | :--- |
 | **Nomenclatura OCI** | Todo tag de Docker debe llevar el prefijo `<host>/<proyecto>/<imagen>:<tag>` para saber a qué registro enrutar el push. |
 | **Reutilización de Capas** | Los registros OCI solo descargan y suben capas que no existan previamente, ahorrando ancho de banda y tiempo. |
-| **Cuentas Robot (Robot Accounts)** | Evitan exponer credenciales humanas personales en pipelines de CI/CD y clústeres de Kubernetes. |
-| **Vulnerability Prevention** | Políticas que bloquean automáticamente la descarga de imágenes con CVEs críticos o altos detectados por Trivy. |
-| **`imagePullSecrets`** | Mecanismo de Kubernetes para entregar credenciales seguras al Kubelet al descargar imágenes de registros privados. |
+| **Cuentas Robot (Robot Accounts)** | Evitan exponer credenciales humanas personales en pipelines automatizados. |
+| **Vulnerability Prevention** | Políticas que bloquean automáticamente la descarga de imágenes con fallos de seguridad detectados por Trivy. |
+| **Ciclo Completo** | `docker build` ➔ `docker tag` ➔ `docker push` ➔ `docker pull` ➔ `docker run`. |
 
 ---
 
-> 📖 **Guía Complementaria:** Si deseas aprender a instalar Harbor en Kubernetes con Helm o conocer a fondo su arquitectura interna, consulta la [**Guía Empresarial de Harbor**](../../../recursos/guia-harbor-registry.md).
+> 📖 **Guía Complementaria:** Si deseas conocer a fondo la arquitectura interna de Harbor o aprender cómo se instala en un clúster con Helm, consulta la [**Guía Empresarial de Harbor**](../../../recursos/guia-harbor-registry.md).

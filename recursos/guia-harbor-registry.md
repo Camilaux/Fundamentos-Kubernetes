@@ -312,9 +312,13 @@ docker pull harbor.local:8080/cafeteria/mi-api-cnm:v1.0
 
 ---
 
-## ☸️ Integración con Kubernetes: `imagePullSecrets`
+## ☸️ Vista Previa: ¿Cómo se usará en Kubernetes? (`imagePullSecrets`)
 
-Kubernetes necesita credenciales para poder hacer `pull` desde un registro privado de Harbor. Esto se realiza en dos pasos:
+> [!NOTE]
+> ⚠️ **Nota pedagógica para estudiantes de la Semana 0 (Fundamentos de Docker):**  
+> Si estás cursando el módulo inicial de Docker, **no necesitas ejecutar estos comandos todavía**. En la **Semana 1** aprenderás qué es un Pod, qué es un Secret y cómo usar `kubectl`. Esta sección se incluye aquí como una vista previa conceptual para que entiendas la razón de ser de Harbor en el ecosistema Kubernetes.
+
+Cuando despleguemos en Kubernetes a partir de la Semana 1, los nodos del clúster necesitarán credenciales para descargar imágenes de un registro privado de Harbor. Esto se realiza de la siguiente manera:
 
 ### 1. Crear el `Secret` de Docker Registry en Kubernetes
 
