@@ -24,7 +24,13 @@ USER appuser
 # 7. Documentamos el puerto que escucha la aplicación
 EXPOSE 8080
 
-# 8. Ejecutamos la aplicación en primer plano (PID 1) usando la forma exec (corchetes)
+# 8. 🩺 Comprobación de salud (Health Check) para monitorear el estado del contenedor
+# Mitiga la desconfiguración de seguridad/calidad al permitir que Docker detecte si la app responde
+HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
+  CMD wget -q -O /dev/null http://localhost:8080/health || exit 1
+
+# 9. Ejecutamos la aplicación en primer plano (PID 1) usando la forma exec (corchetes)
 # Esto asegura que reciba señales del sistema operativo (SIGTERM) para apagado limpio
 CMD ["python", "app.py"]
+
 
