@@ -45,7 +45,56 @@ Tienes dos formas de realizar este laboratorio:
 * **Opción A (Instancia Empresarial / Servidor Harbor):**  
   Si tu organización o comunidad dispone de un servidor Harbor (ej: `https://harbor.mi-empresa.com`), usa esa URL y tus credenciales asignadas.
 * **Opción B (Laboratorio Local Rápido):**  
-  Si estás en tu propia máquina y deseas simular el registro con interfaz web de inmediato, levanta el registro local incluido en esta carpeta:
+  Si estás en tu propia máquina y deseas simular el registro con interfaz web de inmediato, levanta el registro local incluido en esta carpeta con Docker Compose:
+
+  ```yaml
+  # 📄 docker-compose.yml
+  services:
+    registry:
+      image: registry:2
+      container_name: registro-local
+      restart: unless-stopped
+      ports:
+        - "5001:5000"
+      environment:
+        REGISTRY_STORAGE_DELETE_ENABLED: "true"
+        REGISTRY_HTTP_SECRET: "secreto-registro-local-cnm"
+        REGISTRY_HTTP_HEADERS_Access-Control-Allow-Origin: "['*']"
+        REGISTRY_HTTP_HEADERS_Access-Control-Allow-Methods: "['HEAD', 'GET', 'OPTIONS', 'DELETE']"
+        REGISTRY_HTTP_HEADERS_Access-Control-Allow-Headers: "['Authorization', 'Accept', 'Cache-Control']"
+        REGISTRY_HTTP_HEADERS_Access-Control-Expose-Headers: "['Docker-Content-Digest']"
+      volumes:
+        - datos-registro:/var/lib/registry
+      networks:
+        - red-registro
+
+    registry-ui:
+      image: joxit/docker-registry-ui:2
+      container_name: registro-ui
+      restart: unless-stopped
+      ports:
+        - "8082:80"
+      environment:
+        - SINGLE_REGISTRY=true
+        - REGISTRY_TITLE=Registro Local Cloud Native Medellín
+        - DELETE_IMAGES=true
+        - SHOW_CONTENT_DIGEST=true
+        - NGINX_PROXY_PASS_URL=http://registry:5000
+      depends_on:
+        - registry
+      networks:
+        - red-registro
+
+  volumes:
+    datos-registro:
+      name: datos-registro-local
+
+  networks:
+    red-registro:
+      name: red-registro-local
+  ```
+
+  Para iniciarlo:
   ```bash
   docker compose -f semana-00-fundamentos-docker/1.ejemplos/05-registro-imagenes-harbor/docker-compose.yml up -d
   ```
@@ -93,9 +142,9 @@ En la interfaz web de Harbor (Opción A):
 
 ### 4. Etiquetar las Imágenes de los Laboratorios Anteriores (`docker tag`)
 
-Por defecto, Docker asume que una imagen sin prefijo pertenece a Docker Hub. Para indicarle que debe enviarse a Harbor, el nombre de la imagen debe incluir la **URL del registro** y el **proyecto**:
+Por defecto, Docker asume que una imagen sin prefijo pertenece a Docker Hub. Para indicarle que debe enviarse a Harbor o a tu registro local, el nombre de la imagen debe incluir la **URL del registro** y el **proyecto**:
 
-$$\text{Nomenclatura Obligatoria:} \quad \mathbf{\langle host\text{-}registro\rangle} / \mathbf{\langle proyecto\rangle} / \mathbf{\langle nombre\text{-}imagen\rangle} : \mathbf{\langle tag\rangle}$$
+> 🏷️ **Nomenclatura Obligatoria:** `<host-registro>/<proyecto>/<nombre-imagen>:<tag>`
 
 Vamos a etiquetar las imágenes que construiste en los ejemplos anteriores (`01`, `02`, `03` y `04`):
 
