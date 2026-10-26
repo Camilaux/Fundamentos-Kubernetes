@@ -10,21 +10,6 @@ Aprenderás el ciclo de vida completo de distribución en Docker: cómo autentic
 
 ---
 
-## 🏗️ Ciclo de Distribución OCI Local
-
-```mermaid
-flowchart TD
-    L5_DEV["💻 1. Entorno Local de Desarrollo (Empaquetado y Tag OCI)<br/>docker tag mi-api-cnm:v1.0 localhost:5001/cafeteria/mi-api-cnm:v1.0"]
-    L5_REG["⚓ 2. Registro OCI / Harbor Local (Servicio en Puerto 5001)<br/>Almacén privado y seguro de imágenes y capas OCI"]
-    L5_UI["🌐 3. Interfaz Gráfica Web del Registro (http://localhost:8082)<br/>Explorador de repositorios, etiquetas y digests SHA-256"]
-    L5_RUN["🚀 4. Despliegue del Contenedor desde el Registro OCI Local<br/>docker run -d -p 8080:8080 localhost:5001/cafeteria/mi-api-cnm:v1.0"]
-
-    L5_DEV -->|"docker push"| L5_REG
-    L5_REG -->|"Inspección de artefactos"| L5_UI
-    L5_REG -->|"docker pull"| L5_RUN
-```
-
----
 
 ## 📄 Estructura del Ejemplo
 
