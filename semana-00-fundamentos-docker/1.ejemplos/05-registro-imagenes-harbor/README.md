@@ -10,32 +10,18 @@ Aprenderás el ciclo de vida completo de distribución en Docker: cómo autentic
 
 ---
 
-## 🏗️ Ciclo de Distribución de Contenedores con Docker y Harbor
+## 🏗️ Ciclo de Distribución OCI Local
 
 ```mermaid
-sequenceDiagram
-    autonumber
-    actor Dev as 💻 Desarrollador (Tu Máquina)
-    participant Harbor as ⚓ Harbor Registry
-    participant Servidor as 🚀 Servidor de Destino / Producción
+flowchart TD
+    DEV["💻 1. Tu Máquina Local<br/>docker tag mi-api-cnm:v1.0 localhost:5001/cafeteria/mi-api-cnm:v1.0"]
+    REG["📦 2. Registro OCI Local (localhost:5001)<br/>Almacena imágenes y capas"]
+    UI["🌐 3. Interfaz Web (http://localhost:8082)<br/>Explorador de repositorios y digests"]
+    RUN["🚀 4. Contenedor en Ejecución<br/>docker run -d -p 8080:8080 localhost:5001/cafeteria/mi-api-cnm:v1.0"]
 
-    Note over Dev: 1. Empaque y Etiquetado Local
-    Dev->>Dev: docker build -t mi-api-cnm:v1.0 .
-    Dev->>Dev: docker tag mi-api-cnm:v1.0 harbor.local/cafeteria/mi-api-cnm:v1.0
-
-    Note over Dev,Harbor: 2. Autenticación y Publicación
-    Dev->>Harbor: docker login harbor.local
-    Dev->>Harbor: docker push harbor.local/cafeteria/mi-api-cnm:v1.0
-
-    Note over Harbor: 3. Auditoría en Bodega
-    Harbor->>Harbor: Escaneo automático con Trivy
-    Harbor->>Harbor: Verificar Política de Vulnerabilidades
-
-    Note over Harbor,Servidor: 4. Descarga y Ejecución en Destino
-    Servidor->>Harbor: docker login harbor.local
-    Servidor->>Harbor: docker pull harbor.local/cafeteria/mi-api-cnm:v1.0
-    Servidor->>Servidor: docker run -d -p 8080:8080 ...
-    Note over Servidor: Contenedor en ejecución ✅
+    DEV -->|"docker push"| REG
+    REG -->|"Inspección visual"| UI
+    REG -->|"docker pull"| RUN
 ```
 
 ---
