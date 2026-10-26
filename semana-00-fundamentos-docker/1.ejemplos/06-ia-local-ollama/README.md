@@ -14,14 +14,14 @@ Aquí juntas todo lo que viste en los ejemplos anteriores: imágenes oficiales, 
 
 ```mermaid
 flowchart TD
-    U["💻 1. Terminal Local y Cliente curl (Pruebas DevOps)<br/>Envío de peticiones y consultas interactivas al Asistente"]
-    P["🔒 2. Servidor API REST de Ollama (Puerto 11434)<br/>Servicio restringido a loopback local: 127.0.0.1"]
-    M["🤖 3. Asistente DevOps Personalizado en CPU: devops-mini<br/>Inferencia local basada en el modelo Qwen2.5 0.5B"]
-    V["💾 4. Almacenamiento Persistente en Volumen Docker: ollama<br/>Modelos, pesos y capas resguardados en /root/.ollama"]
+    L6_CLI["💻 1. Terminal Local y Cliente curl (Pruebas DevOps)<br/>Envío de peticiones y consultas interactivas al Asistente"]
+    L6_API["🔒 2. Servidor API REST de Ollama (Puerto 11434)<br/>Servicio restringido a loopback local: 127.0.0.1"]
+    L6_LLM["🤖 3. Asistente DevOps Personalizado en CPU: devops-mini<br/>Inferencia local basada en el modelo Qwen2.5 0.5B"]
+    L6_VOL["💾 4. Almacenamiento Persistente en Volumen Docker: ollama<br/>Modelos, pesos y capas resguardados en /root/.ollama"]
 
-    U -->|"HTTP 127.0.0.1:11434"| P
-    P -->|"Inferencia en CPU"| M
-    M <-->|"Persistencia de pesos"| V
+    L6_CLI -->|"HTTP 127.0.0.1:11434"| L6_API
+    L6_API -->|"Inferencia en CPU"| L6_LLM
+    L6_LLM <-->|"Persistencia de pesos"| L6_VOL
 ```
 
 ---
