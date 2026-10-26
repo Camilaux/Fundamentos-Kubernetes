@@ -13,13 +13,10 @@ Aquí juntas todo lo que viste en los ejemplos anteriores: imágenes oficiales, 
 ## 🏗️ Arquitectura del Laboratorio
 
 ```mermaid
-flowchart LR
-    U["💻 Terminal local / curl"] -->|"Consultas DevOps"| P["🔒 127.0.0.1:11434<br/>(solo tu máquina)"]
-    subgraph C ["🐳 Contenedor: ollama (CPU, 1400 MB RAM)"]
-        API["⚙️ API REST de Ollama"] --> M["🤖 devops-mini<br/>(basado en Qwen2.5 0.5B)"]
-    end
-    P --> API
-    M <-->|"Modelos persistentes"| V[("💾 Volumen: ollama<br/>/root/.ollama")]
+flowchart TD
+    U["💻 1. Terminal local / curl<br/>Consultas DevOps"] -->|"HTTP 127.0.0.1:11434"| P["🔒 2. API REST de Ollama<br/>Solo accesible en loopback local"]
+    P -->|"Inferencia en CPU"| M["🤖 3. Asistente devops-mini<br/>Personalizado con Modelfile"]
+    M <-->|"Modelos persistentes"| V["💾 4. Volumen Docker: ollama<br/>Montado en /root/.ollama"]
 ```
 
 ---
