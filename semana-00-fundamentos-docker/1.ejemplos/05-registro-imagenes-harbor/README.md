@@ -12,17 +12,7 @@ Aprenderás el ciclo de vida completo de distribución en Docker: cómo autentic
 
 ## 🏗️ Ciclo de Distribución OCI Local
 
-```mermaid
-flowchart TD
-    DEV["💻 1. Tu Máquina Local<br/>Construcción y etiquetado (docker tag)"]
-    REG["📦 2. Registro Local / Harbor (5001)<br/>Almacenamiento de imágenes OCI"]
-    UI["🌐 3. Interfaz Web UI (8082)<br/>Explorador de catálogos y tags"]
-    RUN["🚀 4. Contenedor en Ejecución<br/>Descarga y despliegue (docker pull & run)"]
-
-    DEV -->|"docker push"| REG
-    REG -->|"Inspección"| UI
-    REG -->|"docker pull"| RUN
-```
+![Ciclo de Distribución OCI con Registro Local](diagrama.svg)
 
 ---
 

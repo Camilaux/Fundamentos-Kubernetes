@@ -1,0 +1,84 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 860 480" width="100%" height="100%" style="background: #0f172a; border-radius: 12px; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;">
+  <defs>
+    <filter id="shadow-l6" x="-5%" y="-5%" width="110%" height="115%">
+      <feDropShadow dx="0" dy="4" stdDeviation="6" flood-color="#000000" flood-opacity="0.45"/>
+    </filter>
+    <marker id="arrow-blue-l6" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1.5 L 8 5 L 0 8.5 z" fill="#38bdf8"/>
+    </marker>
+    <marker id="arrow-violet-l6" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1.5 L 8 5 L 0 8.5 z" fill="#a78bfa"/>
+    </marker>
+    <marker id="arrow-emerald-l6" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1.5 L 8 5 L 0 8.5 z" fill="#34d399"/>
+    </marker>
+  </defs>
+
+  <!-- Title Banner -->
+  <rect x="30" y="24" width="800" height="50" rx="8" fill="#1e293b" stroke="#334155" stroke-width="1"/>
+  <text x="50" y="46" fill="#f8fafc" font-size="16" font-weight="700">🤖 Laboratorio 6: Arquitectura de IA Local con Ollama en Docker</text>
+  <text x="50" y="63" fill="#94a3b8" font-size="12">Inferencia en CPU • Restricción de loopback 127.0.0.1 • Modelo devops-mini • Persistencia</text>
+
+  <!-- Paso 1: Terminal Local -->
+  <g transform="translate(30, 95)" filter="url(#shadow-l6)">
+    <rect width="385" height="150" rx="10" fill="#1e293b" stroke="#38bdf8" stroke-width="1.5"/>
+    <rect x="18" y="16" width="36" height="36" rx="8" fill="#0369a1"/>
+    <text x="26" y="40" font-size="20">💻</text>
+    <text x="66" y="33" fill="#f8fafc" font-size="15" font-weight="700">1. Terminal Local / curl</text>
+    <text x="66" y="50" fill="#94a3b8" font-size="12">Consultas interactivas y peticiones REST</text>
+    <rect x="18" y="68" width="350" height="66" rx="6" fill="#090d16"/>
+    <text x="30" y="91" fill="#94a3b8" font-size="11"># Consulta directa en formato JSON:</text>
+    <text x="30" y="112" fill="#38bdf8" font-family="ui-monospace, monospace" font-size="11">curl http://127.0.0.1:11434/api/chat -d '...'</text>
+  </g>
+
+  <!-- Paso 2: Servidor API REST (Puerto 11434) -->
+  <g transform="translate(30, 290)" filter="url(#shadow-l6)">
+    <rect width="385" height="150" rx="10" fill="#1e293b" stroke="#a78bfa" stroke-width="1.5"/>
+    <rect x="18" y="16" width="36" height="36" rx="8" fill="#5b21b6"/>
+    <text x="26" y="40" font-size="20">🔒</text>
+    <text x="66" y="33" fill="#f8fafc" font-size="15" font-weight="700">2. Servidor API REST de Ollama</text>
+    <text x="66" y="50" fill="#c4b5fd" font-size="12">Publicado únicamente en loopback 127.0.0.1:11434</text>
+    <rect x="18" y="68" width="350" height="66" rx="6" fill="#090d16"/>
+    <text x="30" y="91" fill="#94a3b8" font-size="11">Seguridad: No accesible desde redes externas</text>
+    <text x="30" y="112" fill="#a78bfa" font-family="ui-monospace, monospace" font-size="11">-p 127.0.0.1:11434:11434 (Protección sin auth)</text>
+  </g>
+
+  <!-- Flecha 1 -> 2: HTTP -->
+  <path d="M 222 245 L 222 288" stroke="#38bdf8" stroke-width="2.5" stroke-dasharray="5 4" fill="none" marker-end="url(#arrow-blue-l6)"/>
+  <rect x="152" y="254" width="140" height="22" rx="11" fill="#0284c7"/>
+  <text x="222" y="269" fill="#ffffff" font-size="11" font-weight="700" text-anchor="middle">HTTP 127.0.0.1:11434</text>
+
+  <!-- Paso 3: Asistente devops-mini (Inferencia CPU) -->
+  <g transform="translate(445, 95)" filter="url(#shadow-l6)">
+    <rect width="385" height="150" rx="10" fill="#1e293b" stroke="#34d399" stroke-width="1.5"/>
+    <rect x="18" y="16" width="36" height="36" rx="8" fill="#065f46"/>
+    <text x="26" y="40" font-size="20">🤖</text>
+    <text x="66" y="33" fill="#f8fafc" font-size="15" font-weight="700">3. Asistente devops-mini</text>
+    <text x="66" y="50" fill="#a7f3d0" font-size="12">Inferencia en CPU (3 núcleos, 1400 MB RAM)</text>
+    <rect x="18" y="68" width="350" height="66" rx="6" fill="#090d16"/>
+    <text x="30" y="91" fill="#94a3b8" font-size="11">Modelo afinado con Modelfile (Qwen2.5 0.5B):</text>
+    <text x="30" y="112" fill="#34d399" font-family="ui-monospace, monospace" font-size="11">Contexto 1024 tokens • Predict 256 tokens</text>
+  </g>
+
+  <!-- Flecha 2 -> 3: Inferencia en CPU -->
+  <path d="M 415 340 L 530 340 L 530 247" stroke="#34d399" stroke-width="2.5" fill="none" marker-end="url(#arrow-emerald-l6)"/>
+  <rect x="440" y="328" width="105" height="22" rx="11" fill="#059669"/>
+  <text x="492" y="343" fill="#ffffff" font-size="11" font-weight="700" text-anchor="middle">Inferencia CPU</text>
+
+  <!-- Paso 4: Volumen Docker Persistente -->
+  <g transform="translate(445, 290)" filter="url(#shadow-l6)">
+    <rect width="385" height="150" rx="10" fill="#1e293b" stroke="#f472b6" stroke-width="1.5"/>
+    <rect x="18" y="16" width="36" height="36" rx="8" fill="#831843"/>
+    <text x="26" y="40" font-size="20">💾</text>
+    <text x="66" y="33" fill="#f8fafc" font-size="15" font-weight="700">4. Almacenamiento Persistente</text>
+    <text x="66" y="50" fill="#fbcfe8" font-size="12">Volumen 'ollama' montado en /root/.ollama</text>
+    <rect x="18" y="68" width="350" height="66" rx="6" fill="#090d16"/>
+    <text x="30" y="91" fill="#94a3b8" font-size="11">Pesos y capas no se pierden al recrear:</text>
+    <text x="30" y="112" fill="#f472b6" font-family="ui-monospace, monospace" font-size="11">-v ollama:/root/.ollama (Persistencia real)</text>
+  </g>
+
+  <!-- Flecha bidireccional 3 <-> 4 -->
+  <path d="M 637 245 L 637 288" stroke="#f472b6" stroke-width="2.5" fill="none" marker-end="url(#arrow-emerald-l6)"/>
+  <rect x="580" y="254" width="115" height="22" rx="11" fill="#9d174d"/>
+  <text x="637" y="269" fill="#ffffff" font-size="11" font-weight="700" text-anchor="middle">Modelos y Pesos</text>
+</svg>

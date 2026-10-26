@@ -10,7 +10,11 @@ Aquí juntas todo lo que viste en los ejemplos anteriores: imágenes oficiales, 
 
 ---
 
+## 🏗️ Arquitectura del Laboratorio
 
+![Arquitectura de IA Local con Ollama](diagrama.svg)
+
+---
 ## 📄 Estructura del Ejemplo
 
 ```text
