@@ -69,6 +69,8 @@ Tienes dos formas de realizar este laboratorio:
 
 ### 2. Autenticación en el Registro (`docker login`)
 
+> 💡 **Nota para la Opción B (Registro Local):** Si estás utilizando el registro local de Docker Compose (`localhost:5001`), no necesitas autenticarte con `docker login` (no requiere contraseña). Puedes saltar directamente al **Paso 4**.
+
 Para interactuar con un registro remoto o protegido, debes iniciar sesión desde tu terminal:
 
 ```bash
@@ -91,7 +93,9 @@ docker login harbor.cloudnative.local:8080 -u "robot$ci-deployer" -p "tu-token-s
 
 ### 3. Crear el Proyecto en Harbor
 
-En la interfaz web de Harbor:
+> 💡 **Nota para la Opción B (Registro Local):** En el registro OCI local de Docker Compose, los proyectos/namespaces se crean de forma automática al hacer `docker push` hacia el prefijo correspondiente (ej. `localhost:5001/cafeteria/...`). No requieres crearlo manualmente; puedes saltar al **Paso 4**.
+
+En la interfaz web de Harbor (Opción A):
 1. Haz clic en **"+ New Project"** (Nuevo Proyecto).
 2. Nómbralo: `cafeteria` (o el nombre de tu aplicación).
 3. Selecciona el nivel de acceso:
@@ -110,9 +114,13 @@ $$\text{Nomenclatura Obligatoria:} \quad \mathbf{\langle host\text{-}registro\ra
 Vamos a etiquetar las imágenes que construiste en los ejemplos anteriores (`01`, `02`, `03` y `04`):
 
 ```bash
-# Definimos las variables de nuestro registro (ajusta según tu entorno):
-REGISTRO="harbor.cloudnative.local:8080"
+# Si estás usando el registro local con Docker Compose (Opción B):
+REGISTRO="localhost:5001"
 PROYECTO="cafeteria"
+
+# Si estás usando un servidor Harbor empresarial / remoto (Opción A):
+# REGISTRO="harbor.cloudnative.local:8080"
+# PROYECTO="cafeteria"
 
 # 1. Imagen del Servidor Web Nginx (Ejemplo 01)
 docker tag mi-web-estatica:v1.0 ${REGISTRO}/${PROYECTO}/mi-web-estatica:v1.0
@@ -164,18 +172,35 @@ docker push ${REGISTRO}/${PROYECTO}/app-ventas:v1.0
 
 ---
 
-### 6. Inspección y Escaneo de Seguridad en la Web de Harbor
+### 6. Inspección de Artefactos y Escaneo de Seguridad
 
-Entra a la interfaz de Harbor y abre el proyecto `cafeteria`:
-1. **Artefactos OCI:** Verás el repositorio `mi-api-cnm` con el tag `v1.0`.
-2. **Digest Criptográfico:** Cada imagen tiene su hash SHA-256 inmutable que garantiza que nadie haya alterado el contenido.
-3. **Escudo de Vulnerabilidades (Trivy):**  
-   Observa el badge de seguridad. Al hacer clic en él, verás el reporte detallado generado automáticamente:
-   * Al haber usado `python:3.12-alpine`, verás **0 vulnerabilidades de severidad alta o crítica**.
-4. **Política de Prevención de Vulnerabilidades:**  
-   En la pestaña **Configuration** de tu proyecto, activa la opción:
-   * *"Prevent vulnerable images from running"*.
-   * Si una imagen supera el umbral de severidad configurado, Harbor bloqueará cualquier intento de descarga (`docker pull`).
+Dependiendo de qué opción estés usando, la experiencia visual es diferente:
+
+#### 🌐 En la UI del Registro Local (Opción B: `Docker Registry UI`)
+Al ingresar a **[http://localhost:8082](http://localhost:8082)** observarás:
+1. **Repositorios y Tags:** El espacio de nombres `cafeteria/` agrupando tus imágenes (`mi-api-cnm`, `greca-backend`, `mi-web-estatica`, `app-ventas`).
+2. **Digest Criptográfico:** El hash inmutable `sha256:b9b4ef6d...` que garantiza la integridad del contenido.
+3. **Detalles de Capas:** Tamaño (`18 MB`), arquitectura (`amd64`) e historial de capas de cada tag.
+
+> ℹ️ **¿Por qué no aparece el "Escudo de Vulnerabilidades" en esta web?**  
+> `docker-compose.yml` levanta un stack ultraligero compuesto por el registro OCI oficial de Docker (`registry:2`) y una interfaz gráfica comunitaria (`docker-registry-ui`). Este visor **no** integra un motor de análisis estático como Trivy (Harbor requiere más de 7 contenedores: PostgreSQL, Redis, Core, Jobservice, Trivy-adapter, etc., consumiendo más de 4 GB de RAM).
+>
+> 🛡️ **¿Cómo escanear las vulnerabilidades con Trivy en tu máquina local?**  
+> Puedes ejecutar el motor de Trivy directamente por terminal contra cualquiera de tus imágenes:
+> ```bash
+> # Escanear la imagen local con Trivy:
+> docker run --rm -v /var/run/docker.sock:/var/run/docker.sock aquasec/trivy:latest image mi-api-cnm:v1.0
+> 
+> # O usando Docker Scout (si está disponible en tu cliente Docker):
+> docker scout cves mi-api-cnm:v1.0
+> ```
+> Verás el reporte completo en consola confirmando que, gracias a `python:3.12-alpine`, obtienes **0 vulnerabilidades de severidad alta o crítica**.
+
+#### ⚓ En la Web de Harbor Empresarial (Opción A)
+Si tu empresa o laboratorio cuenta con una instancia completa de Harbor:
+1. **Artefactos OCI:** Verás el proyecto `cafeteria` con el repositorio `mi-api-cnm` y el tag `v1.0`.
+2. **Escudo de Vulnerabilidades (Trivy Integrado):** En la columna *Vulnerabilities* verás el badge interactivo con el semáforo de seguridad generado automáticamente por Trivy al hacer push.
+3. **Política de Prevención de Vulnerabilidades:** En la pestaña **Configuration** de tu proyecto, puedes activar *"Prevent vulnerable images from running"*. Si una imagen supera el umbral configurado, Harbor bloqueará automáticamente cualquier intento de `docker pull`.
 
 ---
 

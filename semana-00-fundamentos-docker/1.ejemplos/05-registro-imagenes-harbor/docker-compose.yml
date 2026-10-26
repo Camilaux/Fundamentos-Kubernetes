@@ -8,10 +8,11 @@ services:
       - "5001:5000"
     environment:
       REGISTRY_STORAGE_DELETE_ENABLED: "true"
-      REGISTRY_HTTP_HEADERS_Access-Control-Allow-Origin: '[*]'
-      REGISTRY_HTTP_HEADERS_Access-Control-Allow-Methods: '[HEAD,GET,OPTIONS,DELETE]'
-      REGISTRY_HTTP_HEADERS_Access-Control-Allow-Headers: '[Authorization,Accept,Cache-Control]'
-      REGISTRY_HTTP_HEADERS_Access-Control-Expose-Headers: '[Docker-Content-Digest]'
+      REGISTRY_HTTP_SECRET: "secreto-registro-local-cnm"
+      REGISTRY_HTTP_HEADERS_Access-Control-Allow-Origin: "['*']"
+      REGISTRY_HTTP_HEADERS_Access-Control-Allow-Methods: "['HEAD', 'GET', 'OPTIONS', 'DELETE']"
+      REGISTRY_HTTP_HEADERS_Access-Control-Allow-Headers: "['Authorization', 'Accept', 'Cache-Control']"
+      REGISTRY_HTTP_HEADERS_Access-Control-Expose-Headers: "['Docker-Content-Digest']"
     volumes:
       - datos-registro:/var/lib/registry
     networks:
@@ -19,16 +20,17 @@ services:
 
   # 🌐 Interfaz Gráfica Web para explorar repositorios y tags
   registry-ui:
-    image: joxit/docker-registry-ui:static
+    image: joxit/docker-registry-ui:2
     container_name: registro-ui
     restart: unless-stopped
     ports:
       - "8082:80"
     environment:
-      - REGISTRY_TITLE=Registro Local Cloud Native Medellín
-      - REGISTRY_URL=http://registry:5000
       - SINGLE_REGISTRY=true
+      - REGISTRY_TITLE=Registro Local Cloud Native Medellín
       - DELETE_IMAGES=true
+      - SHOW_CONTENT_DIGEST=true
+      - NGINX_PROXY_PASS_URL=http://registry:5000
     depends_on:
       - registry
     networks:
