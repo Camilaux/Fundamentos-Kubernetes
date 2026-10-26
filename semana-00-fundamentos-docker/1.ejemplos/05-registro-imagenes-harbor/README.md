@@ -15,12 +15,12 @@ Aprenderás el ciclo de vida completo de distribución en Docker: cómo autentic
 ```mermaid
 flowchart TD
     DEV["💻 1. Tu Máquina Local<br/>docker tag mi-api-cnm:v1.0 localhost:5001/cafeteria/mi-api-cnm:v1.0"]
-    REG["📦 2. Registro OCI Local (localhost:5001)<br/>Almacena imágenes y capas"]
-    UI["🌐 3. Interfaz Web (http://localhost:8082)<br/>Explorador de repositorios y digests"]
+    REG["⚓ 2. Registro OCI / Harbor Local (localhost:5001)<br/>Almacén seguro de imágenes y capas"]
+    UI["🌐 3. Interfaz Web UI (http://localhost:8082)<br/>Explorador de repositorios y digests"]
     RUN["🚀 4. Contenedor en Ejecución<br/>docker run -d -p 8080:8080 localhost:5001/cafeteria/mi-api-cnm:v1.0"]
 
     DEV -->|"docker push"| REG
-    REG -->|"Inspección visual"| UI
+    REG -->|"Inspección de artefactos"| UI
     REG -->|"docker pull"| RUN
 ```
 
