@@ -120,9 +120,10 @@ docker rm -f carrito-2
 
 Un **Bind Mount** conecta directamente una carpeta de tu máquina anfitrión (Host) con una ruta dentro del contenedor. Es ideal para desarrollo local.
 
-1. Crea una carpeta local en tu máquina:
+1. Crea una carpeta local en tu máquina y dale permisos de escritura para el usuario sin privilegios del contenedor (`appuser`, UID 10001):
    ```bash
    mkdir -p ./mis-datos-locales
+   chmod 777 ./mis-datos-locales
    ```
 
 2. Corre el contenedor montando esa carpeta usando ruta absoluta con `$(pwd)`:

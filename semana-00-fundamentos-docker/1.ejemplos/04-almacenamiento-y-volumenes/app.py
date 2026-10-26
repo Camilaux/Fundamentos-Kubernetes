@@ -37,8 +37,14 @@ def guardar_venta(tipo_cafe, cliente):
         "hostname_contenedor": socket.gethostname()
     }
     ventas.append(nueva_venta)
-    with open(DATA_FILE, "w", encoding="utf-8") as f:
-        json.dump(ventas, f, indent=2, ensure_ascii=False)
+    try:
+        with open(DATA_FILE, "w", encoding="utf-8") as f:
+            json.dump(ventas, f, indent=2, ensure_ascii=False)
+    except PermissionError as e:
+        sys.stderr.write(f"🛑 Error de permisos al escribir en {DATA_FILE}: {e}\n")
+        sys.stderr.write("💡 Pista: Si usas Bind Mount, la carpeta del host debe tener permisos de escritura (ej: chmod 777 mis-datos-locales).\n")
+        sys.stderr.flush()
+        raise
     return nueva_venta
 
 HTML_PAGE = """<!DOCTYPE html>
@@ -194,12 +200,31 @@ class StorageHandler(http.server.BaseHTTPRequestHandler):
         if url.path == "/vender":
             tipo = params.get("tipo", ["Tinto Tradicional"])[0]
             cliente = params.get("cliente", ["Cliente Mostrador"])[0]
-            guardar_venta(tipo, cliente)
-            # Redireccionar al inicio
-            self.send_response(303)
-            self.send_header("Location", "/")
-            self.end_headers()
-            return
+            try:
+                guardar_venta(tipo, cliente)
+                # Redireccionar al inicio
+                self.send_response(303)
+                self.send_header("Location", "/")
+                self.end_headers()
+                return
+            except PermissionError as e:
+                self.send_response(500)
+                self.send_header("Content-Type", "application/json; charset=utf-8")
+                self.end_headers()
+                error_resp = {
+                    "error": "Error de permisos al escribir en el almacenamiento",
+                    "archivo": DATA_FILE,
+                    "detalle": str(e),
+                    "solucion": "La carpeta montada desde el host no tiene permisos de escritura para el usuario sin privilegios del contenedor (UID 10001). Ejecuta en el host: chmod 777 mis-datos-locales"
+                }
+                self.wfile.write(json.dumps(error_resp, indent=2, ensure_ascii=False).encode("utf-8"))
+                return
+            except Exception as e:
+                self.send_response(500)
+                self.send_header("Content-Type", "application/json; charset=utf-8")
+                self.end_headers()
+                self.wfile.write(json.dumps({"error": str(e)}, indent=2).encode("utf-8"))
+                return
 
         ventas = cargar_ventas()
         hostname = socket.gethostname()
