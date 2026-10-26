@@ -10,11 +10,11 @@ Hacer tu primer Pull Request registrándote en esta tabla es el **Paso 1** de tu
 
 En este workshop no importa si nunca has abierto una terminal de Linux o si llevas años gestionando servidores en la nube. **Kubernetes se aprende haciendo y compartiendo en comunidad**:
 
-* 💻 **Desarrolladores (Frontend, Backend, Fullstack):** Para aprender a empaquetar aplicaciones en contenedores y entender cómo corren en Kubernetes.
-* 🛠️ **DevOps, SREs y Sysadmins:** Para estandarizar procesos de despliegue, dominar alta disponibilidad, autorreparación (*self-healing*) y escalado automático.
-* 🧪 **QA y Automatizadores de Pruebas:** Para desplegar entornos de pruebas idénticos a producción en segundos.
-* 🎓 **Estudiantes y Nuevos Talentos:** Para dar su primer salto a tecnologías Cloud Native de alta demanda sin barreras de entrada.
-* 🏗️ **Líderes Técnicos y Arquitectos:** Para comprender las entrañas de Kubernetes, tomar mejores decisiones de diseño y optimizar costos.
+- 💻 **Desarrolladores (Frontend, Backend, Fullstack):** Para aprender a empaquetar aplicaciones en contenedores y entender cómo corren en Kubernetes.
+- 🛠️ **DevOps, SREs y Sysadmins:** Para estandarizar procesos de despliegue, dominar alta disponibilidad, autorreparación (_self-healing_) y escalado automático.
+- 🧪 **QA y Automatizadores de Pruebas:** Para desplegar entornos de pruebas idénticos a producción en segundos.
+- 🎓 **Estudiantes y Nuevos Talentos:** Para dar su primer salto a tecnologías Cloud Native de alta demanda sin barreras de entrada.
+- 🏗️ **Líderes Técnicos y Arquitectos:** Para comprender las entrañas de Kubernetes, tomar mejores decisiones de diseño y optimizar costos.
 
 ---
 
@@ -22,11 +22,11 @@ En este workshop no importa si nunca has abierto una terminal de Linux o si llev
 
 A medida que avances semana a semana y aportes al repositorio, nuestro bot de GitHub Actions actualizará **automáticamente** tu rango en este muro:
 
-| Rango | Requisito | Lo que representa en la travesía |
-| :---: | :---: | :--- |
-| **⛵ Marinero** | 1 PR aprobado | Te registraste en este muro y zarpó tu primer Pod en el clúster. |
-| **🧭 Timonel** | 3 PRs aprobados | Tomaste el timón de la nave, resolviste *Retos Rotos* o aportaste al *Cheatsheet*. |
-| **⚓ Capitán K8s** | 6+ PRs aprobados | Dominas la navegación del clúster, completaste las 6 semanas y el proyecto final. |
+|       Rango        |    Requisito     | Lo que representa en la travesía                                                   |
+| :----------------: | :--------------: | :--------------------------------------------------------------------------------- |
+|  **⛵ Marinero**   |  1 PR aprobado   | Te registraste en este muro y zarpó tu primer Pod en el clúster.                   |
+|   **🧭 Timonel**   | 3 PRs aprobados  | Tomaste el timón de la nave, resolviste _Retos Rotos_ o aportaste al _Cheatsheet_. |
+| **⚓ Capitán K8s** | 6+ PRs aprobados | Dominas la navegación del clúster, completaste las 6 semanas y el proyecto final.  |
 
 ---
 
@@ -46,20 +46,22 @@ A medida que avances semana a semana y aportes al repositorio, nuestro bot de Gi
 4. Abre el Pull Request en GitHub. En cuanto sea aprobado y fusionado, ¡el bot te dará la bienvenida oficial!
 
 ### 📋 Plantilla para copiar y pegar (Opción con foto y badges):
+
 ```markdown
 | <img src="https://github.com/TU-USUARIO.png?size=50" width="32" height="32" style="border-radius: 50%; vertical-align: middle; margin-right: 8px;"> **Tu Nombre** | Tu Rol o Carrera | [![GitHub](https://img.shields.io/badge/GitHub-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/TU-USUARIO)<br>[![LinkedIn](https://img.shields.io/badge/LinkedIn-0A66C2?style=flat-square&logo=linkedin&logoColor=white)](https://linkedin.com/in/tu-perfil) | ⛵ Marinero | Tu meta o qué esperas aprender |
 ```
 
-*(Si prefieres no usar badges ni foto, también puedes escribir tu nombre en texto simple: `| **Tu Nombre** | Tu Rol | [@tu-usuario](url) | ⛵ Marinero | Tu meta |`).*
+_(Si prefieres no usar badges ni foto, también puedes escribir tu nombre en texto simple: `| **Tu Nombre** | Tu Rol | [@tu-usuario](url) | ⛵ Marinero | Tu meta |`)._
 
 ---
 
 ## 👥 Muro Oficial de la Tripulación
 
-| 👤 Tripulante | 💼 Rol / Especialidad | 🌐 Redes Profesionales | 🎖️ Rango | 🎯 ¿Qué te motivó a unirte? |
-| :--- | :--- | :---: | :---: | :--- |
-| <img src="https://github.com/edwinbermudez91.png?size=50" width="32" height="32" style="border-radius: 50%; vertical-align: middle; margin-right: 8px;"> **Edwin Bermúdez** | 👨‍🏫 Instructor<br>Senior DevOps & SRE | [![GitHub](https://img.shields.io/badge/GitHub-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/edwinbermudez91)<br>[![LinkedIn](https://img.shields.io/badge/LinkedIn-0A66C2?style=flat-square&logo=linkedin&logoColor=white)](https://www.linkedin.com/in/edwin-bermudez-cuervo) | ⚓ Capitán K8s | Compartir conocimiento y fortalecer la comunidad Cloud Native en Medellín. 🏔️☕ |
-| <img src="https://github.com/glgaviria64.png?size=50" width="32" height="32" style="border-radius: 50%; vertical-align: middle; margin-right: 8px;"> **Gloria Gaviria** | 👩‍💻 Estudiante<br>Desarrolladora Jr | [![GitHub](https://img.shields.io/badge/GitHub-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/glgaviria64)<br>[![LinkedIn](https://img.shields.io/badge/LinkedIn-0A66C2?style=flat-square&logo=linkedin&logoColor=white)](https://www.linkedin.com/in/glgaviria) | ⛵ Marinero | Aprender de la comunidad de Cloud Native Medellín. 🏔️☕ |
+| 👤 Tripulante                                                                                                                                                               | 💼 Rol / Especialidad                |                                                                                                                                               🌐 Redes Profesionales                                                                                                                                                |    🎖️ Rango    | 🎯 ¿Qué te motivó a unirte?                                                        |
+| :-------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | :----------------------------------- | :-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------: | :------------: | :--------------------------------------------------------------------------------- |
+| <img src="https://github.com/edwinbermudez91.png?size=50" width="32" height="32" style="border-radius: 50%; vertical-align: middle; margin-right: 8px;"> **Edwin Bermúdez** | 👨‍🏫 Instructor<br>Senior DevOps & SRE |     [![GitHub](https://img.shields.io/badge/GitHub-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/edwinbermudez91)<br>[![LinkedIn](https://img.shields.io/badge/LinkedIn-0A66C2?style=flat-square&logo=linkedin&logoColor=white)](https://www.linkedin.com/in/edwin-bermudez-cuervo)     | ⚓ Capitán K8s | Compartir conocimiento y fortalecer la comunidad Cloud Native en Medellín. 🏔️☕    |
+| <img src="https://github.com/glgaviria64.png?size=50" width="32" height="32" style="border-radius: 50%; vertical-align: middle; margin-right: 8px;"> **Gloria Gaviria**     | 👩‍💻 Estudiante<br>Desarrolladora Jr   |             [![GitHub](https://img.shields.io/badge/GitHub-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/glgaviria64)<br>[![LinkedIn](https://img.shields.io/badge/LinkedIn-0A66C2?style=flat-square&logo=linkedin&logoColor=white)](https://www.linkedin.com/in/glgaviria)             |  ⛵ Marinero   | Aprender de la comunidad de Cloud Native Medellín. 🏔️☕                            |
+| <img src="https://github.com/ccsanchezb04.png?size=50" width="32" height="32" style="border-radius: 50%; vertical-align: middle; margin-right: 8px;"> **Cristian Sanchez**  | Desarrollador Fullstack              | [![GitHub](https://img.shields.io/badge/GitHub-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/ccsanchezb04)<br>[![LinkedIn](https://img.shields.io/badge/LinkedIn-0A66C2?style=flat-square&logo=linkedin&logoColor=white)](https://www.linkedin.com/in/cristian-camilo-sanchez-bermudez) |  ⛵ Marinero   | Quiero mejorar mi perfil profesional para encotrar mejores oportunidades laborales |
 
 ---
 
