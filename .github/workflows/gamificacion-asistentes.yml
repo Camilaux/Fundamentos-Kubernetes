@@ -1,0 +1,145 @@
+name: 🏆 Gamificación - Actualizar Rango Automáticamente
+
+on:
+  pull_request_target:
+    types: [closed]
+    branches: [main, master]
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  actualizar-rango:
+    name: Actualizar Rango en ASISTENTES.md
+    if: github.event.pull_request.merged == true
+    runs-on: ubuntu-24.04
+    steps:
+      - name: 📥 Clonar repositorio
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.repository.default_branch }}
+          fetch-depth: 0
+
+      - name: 🎖️ Calcular y actualizar rango de asistente
+        id: calcular
+        uses: actions/github-script@v9
+        with:
+          script: |
+            const fs = require('fs');
+            const pr = context.payload.pull_request;
+            const user = pr.user.login;
+
+            if (pr.user.type === 'Bot' || user.includes('[bot]')) {
+              console.log('Ignorando bots de GitHub');
+              core.setOutput('has_updates', 'false');
+              return;
+            }
+
+            // Ignorar al instructor / mantenedor principal (siempre mantiene su rango fijo de Capitán)
+            const instructors = ['edwinbermudez91', context.repo.owner.toLowerCase()];
+            if (instructors.includes(user.toLowerCase())) {
+              console.log(`Ignorando instructor @${user}: mantiene su rango fijo de Capitán.`);
+              core.setOutput('has_updates', 'false');
+              return;
+            }
+
+            // Consultar todos los PRs cerrados y fusionados de este usuario
+            const pulls = await github.paginate(github.rest.pulls.list, {
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              state: 'closed',
+              per_page: 100
+            });
+
+            const mergedCount = pulls.filter(p =>
+              p.user &&
+              p.user.login.toLowerCase() === user.toLowerCase() &&
+              p.merged_at !== null
+            ).length;
+
+            console.log(`Usuario @${user} tiene ${mergedCount} PR(s) fusionados.`);
+
+            // Determinar rango de navegación según gamificación
+            let newRank = '⛵ Marinero';
+            if (mergedCount >= 6) {
+              newRank = '⚓ Capitán k8s';
+            } else if (mergedCount >= 3) {
+              newRank = '🧭 Timonel';
+            }
+
+            let content = fs.readFileSync('ASISTENTES.md', 'utf8');
+            let lines = content.split('\n');
+            let found = false;
+            let updated = false;
+
+            lines = lines.map(line => {
+              // Proteger siempre la fila del instructor para que no se modifique
+              if (instructors.some(inst => line.toLowerCase().includes(inst))) {
+                return line;
+              }
+              if (
+                line.toLowerCase().includes('@' + user.toLowerCase()) ||
+                line.toLowerCase().includes('github.com/' + user.toLowerCase())
+              ) {
+                found = true;
+                let parts = line.split('|');
+                if (parts.length >= 6) {
+                  let currentRank = parts[4].trim();
+                  if (currentRank !== newRank) {
+                    parts[4] = ' ' + newRank + ' ';
+                    updated = true;
+                    return parts.join('|');
+                  }
+                }
+              }
+              return line;
+            });
+
+            // Si el usuario no estaba en la tabla, agregarlo automáticamente
+            if (!found) {
+              const newRow = `| @${user} | Tripulante de la Comunidad | [@${user}](https://github.com/${user}) | ${newRank} | Aporte en PR #${pr.number}: ${pr.title.replace(/\|/g, '')} |`;
+              lines.push(newRow);
+              updated = true;
+            }
+
+            if (updated) {
+              fs.writeFileSync('ASISTENTES.md', lines.join('\n'));
+              core.setOutput('has_updates', 'true');
+              core.setOutput('new_rank', newRank);
+              core.setOutput('count', mergedCount.toString());
+            } else {
+              core.setOutput('has_updates', 'false');
+            }
+
+      - name: 💾 Guardar cambios en el repositorio
+        if: steps.calcular.outputs.has_updates == 'true'
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add ASISTENTES.md
+          git commit -m "chore(gamificacion): actualizar rango de navegación de @${{ github.event.pull_request.user.login }} a ${{ steps.calcular.outputs.new_rank }} [skip ci]"
+          git push origin HEAD:${{ github.event.repository.default_branch }}
+
+      - name: 📣 Felicitar al contribuyente en el Pull Request
+        if: steps.calcular.outputs.has_updates == 'true'
+        uses: actions/github-script@v9
+        with:
+          script: |
+            const user = context.payload.pull_request.user.login;
+            const rank = '${{ steps.calcular.outputs.new_rank }}';
+            const count = '${{ steps.calcular.outputs.count }}';
+
+            const comment = `### 🏆 ¡Felicidades @${user}! Tu Pull Request ha sido fusionado con éxito.
+            
+            🎖️ **Tu rango de navegación ha sido actualizado automáticamente en el [Muro de Asistentes](https://github.com/${context.repo.owner}/${context.repo.repo}/blob/main/ASISTENTES.md):**
+            👉 **${rank}** *(Total de aportes fusionados: ${count})*
+            
+            ¡Gracias por navegar y construir en comunidad con **Cloud Native Medellín**! 🏔️☕⚓`;
+
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.payload.pull_request.number,
+              body: comment
+            });

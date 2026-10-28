@@ -1,0 +1,45 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: pod-con-init-container
+  labels:
+    comunidad: cloud-native-medellin
+    semana: "1"
+    patron: init-container
+spec:
+  volumes:
+    - name: datos-inicio
+      emptyDir: {}
+
+  # Los initContainers se ejecutan y deben finalizar con código 0
+  # ANTES de que los contenedores de la sección containers arranquen.
+  initContainers:
+    - name: inicializador
+      image: busybox:1.36
+      command: ["/bin/sh", "-c"]
+      args:
+        - |
+          echo "[InitContainer] Preparando archivos y verificando dependencias..."
+          sleep 4
+          cat <<EOF > /trabajo/index.html
+          <!DOCTYPE html>
+          <html>
+          <body style="font-family: sans-serif; background: #042f2e; color: #ccfbf1; padding: 2rem;">
+            <h2>✅ Inicialización Exitosa</h2>
+            <p>Este archivo fue generado por el <strong>initContainer</strong> antes de que Nginx iniciara.</p>
+          </body>
+          </html>
+          EOF
+          echo "[InitContainer] Finalizado con éxito."
+      volumeMounts:
+        - name: datos-inicio
+          mountPath: /trabajo
+
+  containers:
+    - name: servidor-web
+      image: nginx:alpine
+      ports:
+        - containerPort: 80
+      volumeMounts:
+        - name: datos-inicio
+          mountPath: /usr/share/nginx/html

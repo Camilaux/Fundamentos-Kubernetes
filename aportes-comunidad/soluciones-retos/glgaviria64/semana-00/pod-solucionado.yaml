@@ -1,0 +1,23 @@
+# 🚨 RETO 2 DOCKER-K8S (Nivel Medio): El Pod que busca una imagen fantasma 🚨
+# Síntoma: Al aplicar este Pod con:
+#          kubectl apply -f semana-00-fundamentos-docker/2.reto-roto/02-pod-sin-cargar-a-kind.yaml
+#          Al hacer 'kubectl get pods' se queda eternamente en 'ImagePullBackOff' o 'ErrImagePull'.
+#
+# Pista 1: Ejecuta 'kubectl describe pod reto-docker-k8s' y revisa los 'Events' al final.
+# Pista 2: La imagen 'mi-api-cnm:v1.0' fue construida en tu Docker local, pero ¿Kind ya la conoce?
+# Pista 3: ¿Qué le indica 'imagePullPolicy: Always' a Kubernetes?
+#          Si dice 'Always', Kubernetes ignora cualquier imagen local e intenta descargarla de internet.
+
+apiVersion: v1
+kind: Pod
+metadata:
+  name: reto-docker-k8s
+  labels:
+    reto: "docker-02"
+spec:
+  containers:
+    - name: app
+      image: mi-api-cnm:v1.0
+      imagePullPolicy: IfNotPresent
+      ports:
+        - containerPort: 8080

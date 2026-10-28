@@ -1,0 +1,17 @@
+# Clúster Multi-Nodo de Kind configurado para Cilium CNI (eBPF)
+# Workshop De Cero a Capitán en Kubernetes — Cloud Native Medellín
+kind: Cluster
+apiVersion: kind.x-k8s.io/v1alpha4
+
+# Deshabilitamos el CNI por defecto de Kind (kindnet) para que Cilium gestione la red con eBPF
+networking:
+  disableDefaultCNI: true
+  # Opcional: Descomenta si deseas que Cilium reemplace completamente a kube-proxy
+  # kubeProxyMode: "none"
+
+nodes:
+  # El cerebro del clúster (Control Plane)
+  - role: control-plane
+  # Los servidores obreros (Workers) donde correrán tus Pods y los agentes de Cilium
+  - role: worker
+  - role: worker

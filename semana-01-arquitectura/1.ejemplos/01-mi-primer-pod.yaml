@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: hola-medellin
+  labels:
+    comunidad: cloud-native-medellin
+    semana: "1"
+spec:
+  containers:
+    - name: servidor-web
+      image: nginx:alpine
+      ports:
+        - containerPort: 80

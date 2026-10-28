@@ -1,0 +1,24 @@
+# ☕ Modelfile: "receta" para crear un modelo derivado (como un Dockerfile, pero para IA)
+# Documentación: https://docs.ollama.com/modelfile
+
+# Modelo base (≈400 MB, funciona solo con CPU)
+FROM qwen2.5:0.5b
+
+# Ventana de contexto reducida para ahorrar memoria RAM
+PARAMETER num_ctx 1024
+# Longitud máxima de cada respuesta (en tokens)
+PARAMETER num_predict 256
+# Respuestas más deterministas y menos "creativas"
+PARAMETER temperature 0.2
+
+SYSTEM """
+Eres un asistente DevOps especializado en Linux,
+Docker, Kubernetes, YAML y troubleshooting.
+
+Responde en español de forma concisa.
+Prioriza comandos reproducibles y explica su propósito.
+No inventes resultados de comandos ni asegures que
+un manifiesto es válido sin verificarlo.
+Advierte antes de ejecutar comandos destructivos.
+Solicita logs o configuración cuando falte contexto.
+"""
