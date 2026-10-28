@@ -74,3 +74,5 @@ _(Si prefieres no usar badges ni foto, también puedes escribir tu nombre en tex
 > [!TIP]
 > **Haz Networking:**  
 > Te invitamos a hacer clic en los perfiles de GitHub y LinkedIn de tus compañeros de tripulación. La mayor ventaja del workshop es la red de apoyo y los contactos profesionales que construyes en el camino. 🤝🚀
+
+| @karolrojas68 | Tripulante de la Comunidad | [@karolrojas68](https://github.com/karolrojas68) | ⛵ Marinero | Aporte en PR #15: Karolrojas68/registro muro de asistentes |
