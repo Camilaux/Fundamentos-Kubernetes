@@ -1,0 +1,18 @@
+# 🚨 RETO 1 (Nivel Fácil): El Pod que no encuentra su ropa 🚨
+# Síntoma: Al hacer 'kubectl get pods', el estado se queda en ErrImagePull o ImagePullBackOff.
+# Pista: Usa 'kubectl describe pod reto-01-imagen' y lee la sección final llamada "Events".
+
+apiVersion: v1
+kind: Pod
+metadata:
+  name: reto-01-imagen
+  labels:
+    reto: "1"
+spec:
+  containers:
+    - name: servidor-web
+      # Error 1: la etiqueta "version-fantasma-999" no existe en Docker Hub. Se usa nginx:latest.
+      image: nginx:latest
+      ports:
+      # Error 2: el puerto 80809 es inválido (máximo 65535). Nginx escucha en el 80.
+        - containerPort: 80
