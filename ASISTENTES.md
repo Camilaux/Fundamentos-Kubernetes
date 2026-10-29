@@ -84,3 +84,4 @@ _(Si prefieres no usar badges ni foto, también puedes escribir tu nombre en tex
 
 | @karolrojas68 | Tripulante de la Comunidad | [@karolrojas68](https://github.com/karolrojas68) | ⛵ Marinero | Aporte en PR #15: Karolrojas68/registro muro de asistentes |
 | @da237 | Tripulante de la Comunidad | [@da237](https://github.com/da237) | ⛵ Marinero | Aporte en PR #21: Me registro como Marinero en ASISTENTES.md |
+| @Cuburi | Tripulante de la Comunidad | [@Cuburi](https://github.com/Cuburi) | ⛵ Marinero | Aporte en PR #23: Me registro como Marinero en ASISTENTES.md |
